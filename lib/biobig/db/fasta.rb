@@ -6,8 +6,8 @@
 # by Pjotr Prins (c) 2009
 #
 
-require 'db/fasta/fastarecord'
-require 'db/fasta/fastareader'
-require 'db/fasta/fastawriter'
-require 'db/fasta/fastapairedreader'
-require 'db/fasta/fastapairedwriter'
+require 'biobig/db/fasta/fastarecord'
+require 'biobig/db/fasta/fastareader'
+require 'biobig/db/fasta/fastawriter'
+require 'biobig/db/fasta/fastapairedreader'
+require 'biobig/db/fasta/fastapairedwriter'

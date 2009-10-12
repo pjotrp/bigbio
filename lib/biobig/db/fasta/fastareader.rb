@@ -1,7 +1,7 @@
 # FastaReader
 #
 
-require 'db/fasta/indexer'
+require 'biobig/db/fasta/indexer'
 
 class FastaReader
 

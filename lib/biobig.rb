@@ -1,7 +1,8 @@
 # BioBig libraries
 
-module BioBig
+# module BioBig
 
-  autoload :Fasta 'biobig/db/fasta'
+  autoload :FastaReader, 'biobig/db/fasta'
+  autoload :FastaWriter, 'biobig/db/fasta'
 
-end
+# end
