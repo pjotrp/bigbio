@@ -1,13 +1,16 @@
 = BIOBIG =
 
-BioBig = BIG DATA computing for Ruby.
+BioBig = BIG DATA computing for Ruby
 
-BioBig is an initiative to a create high performance libraries for
-big data computing in biology - initially for the Ruby language.
+BioBig is an initiative to a create high performance libraries for big data
+computing in biology - initially for the Ruby language. 
 
-The Ruby version of BioBig uses BioRuby when sensible, but provides
-an interface with a different design. Also it uses BioLib functions
-for increased performance and reduced memory use.
+The Ruby version of BioBig uses BioRuby when sensible, but provides an
+interface with a different design. Also, unlike BioRuby which thinks itself
+pure Ruby, it uses BioLib C/C++ functions for increased performance and reduced
+memory consumption.
+
+Note: this software is in its early stages.
 
 If you wish to contribute subscribe to the BioLib mailing list.
 
