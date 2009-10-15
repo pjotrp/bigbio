@@ -2,7 +2,7 @@
 
 # module BioBig
 
-  autoload :FastaReader, 'biobig/db/fasta'
-  autoload :FastaWriter, 'biobig/db/fasta'
+  autoload :FastaReader, 'bigbio/db/fasta'
+  autoload :FastaWriter, 'bigbio/db/fasta'
 
 # end

@@ -1,2 +1,2 @@
-require 'biobig/db/blast/blastclust'
+require 'bigbio/db/blast/blastclust'
 
