@@ -10,13 +10,13 @@ class FastaRecord
 end
 
 class FastaPairedRecord
-  attr_reader :na, :aa
+  attr_reader :nt, :aa
 
-  def initialize na, aa
-    @na = na
+  def initialize nt, aa
+    @nt = nt
     @aa = aa
-    raise "ID error NA #{na.id} not matching AA #{aa.id}" if na.id != aa.id
-    raise "Sequence size mismatch for #{na.id}" if na.seq.size != aa.seq.size*3
+    raise "ID error NT #{nt.id} not matching AA #{aa.id}" if nt.id != aa.id
+    raise "Sequence size mismatch for #{nt.id}" if nt.seq.size != aa.seq.size*3
   end
 
   def id

@@ -1,19 +1,19 @@
 # FASTA paired reader keeps track of two FASTA files containing
-# matching NA and AA sequences.
+# matching NT and AA sequences.
 #
 
 class FastaPairedReader
 
-  def initialize nafn, aafn, opts={:regex => '(\S+)'}
-    @na = FastaReader.new(nafn, opts)
+  def initialize ntfn, aafn, opts={:regex => '(\S+)'}
+    @nt = FastaReader.new(ntfn, opts)
     @aa = FastaReader.new(aafn, opts)
   end
 
-  # return a NA+AA pair
+  # return a NT+AA pair
   def get id
-    na = @na.get(id)
+    nt = @nt.get(id)
     aa = @aa.get(id)
-    FastaPairedRecord.new(na, aa)
+    FastaPairedRecord.new(nt, aa)
   end
 
 end
