@@ -1,6 +1,6 @@
 # Ruby DocTest
 #
-# Test paired NA+AA sequence functionality.
+# Test paired nt+AA sequence functiontlity.
 #
 # Run with ./runner.rb or
 #
@@ -13,19 +13,19 @@ Dir.chdir(cwd)
 
 # $: << '../../../mappings/swig/ruby/rqtl/'
 
-require 'biolib/biolib_core'
-Biolib::Biolib_core.biolib_setloglevel(7)
+# require 'biolib/biolib_core'
+# Biolib::Biolib_core.biolib_setloglevel(7)
 
 if $UNITTEST
 
 =begin
 
   >> $: << '..'
-  >> require 'bio/sequence2'
+  !> require 'bio/sequence2'
 
-Sequence pairs are paired NA and AA sequences where one can be tested against
-the other (through translation) and an NA sequence can be aligned against an AA
-alignment (protein alignment to nucleotide alignment, also known as pal2nal).
+Sequence pairs are paired NT and AA sequences where one can be tested against
+the other (through translation) and an nt sequence can be aligned against an AA
+alignment (protein alignment to nucleotide alignment, also known as pal2ntl).
 
 =end
 
@@ -35,7 +35,7 @@ require 'db/fasta'
 require 'test/unit'
 
 TESTDIR = '../../../test/data/fasta'
-NA_FILE = TESTDIR + "/na.fa"
+nt_FILE = TESTDIR + "/nt.fa"
 AA_FILE = TESTDIR + "/aa.fa"
 
 class TestBiolibFasta < Test::Unit::TestCase
@@ -44,10 +44,10 @@ class TestBiolibFasta < Test::Unit::TestCase
   end
 
   def test_indexer
-    na_in = FastaReader.new(NA_FILE, :regex => '(\d+)\s', :index => true)
-    rec = na_in.get("122")
+    nt_in = FastaReader.new(nt_FILE, :regex => '(\d+)\s', :index => true)
+    rec = nt_in.get("122")
     assert_equal("122",rec.id)
-    assert_equal("121",na_in.get("121").id)
+    assert_equal("121",nt_in.get("121").id)
   end
 
 end
