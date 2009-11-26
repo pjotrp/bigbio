@@ -20,6 +20,7 @@ class FastaReader
     @rec_fpos = 0
     @rec_line = @f.gets
     fpos = 0
+    @count = 0
     begin
       # digest id from record description
       id, descr = digest_tag(@rec_line)
@@ -33,6 +34,7 @@ class FastaReader
         seq += line.strip 
       end while !@f.eof 
       # new record
+      @count += 1
       @rec_fpos = fpos
       @rec_line = line
       # p [@rec_line, id, id_fpos]
@@ -85,6 +87,12 @@ class FastaReader
       p @regex
     end
     raise "Can not digest '#{tag}' using '"+@regex+"'"
+  end
+
+  # Returns the size of the dataset - as read. After the final
+  # record the size represents the number of items in the FASTA file
+  def size
+    @count
   end
 
   def close
