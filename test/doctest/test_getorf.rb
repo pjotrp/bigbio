@@ -57,10 +57,18 @@ we look for all ORF's between STOP codons (with a minimal size of 30 AA).
 Get the first (and largest) ORF
 
   >> orf = orflist.first
-  >> orf.descr
-  => "[XX 0 - 183; +1] PlantGDB Arabidopsis_thaliana Jan_15_2007"
+
+The id contains the number of the ORF at the last position (like EMBOSS' 
+getorf does)
+
   >> orf.id
   => "PUT-157a-Arabidopsis_thaliana-126_1"
+
+The description contains 'XX' for the STOPSTOP search. Unlike getorf it shows
+the reading frame.
+
+  >> orf.descr
+  => "[XX 0 - 183; +1] PlantGDB Arabidopsis_thaliana Jan_15_2007"
   >> orf.aa.seq.size
   => 61
   >> orf.aa.seq
