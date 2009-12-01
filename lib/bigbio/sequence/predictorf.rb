@@ -32,15 +32,14 @@ end
 class ORFaminoacids < ORFsequence
 end
 
-
 class ORF
   attr_reader :id, :descr, :nt, :aa, :frame
-  def initialize num, id, descr, nt, frame, start, aa
+  def initialize num, type, id, descr, nt, frame, start, aa
     @id = id +'_'+(num+1).to_s
     stop = start + aa.size * 3
     fr = frame.to_s
     fr = '+'+fr if frame > 0
-    @descr = "[#{start} - #{stop}; #{fr}] " + descr
+    @descr = "[#{type} #{start} - #{stop}; #{fr}] " + descr
     @nt = ORFnucleotides.new(nt, start, stop)
     @frame = frame
     @aa = ORFaminoacids.new(aa)
@@ -49,7 +48,6 @@ class ORF
   def <=> orf
     orf.aa.seq.size <=> aa.seq.size
   end
-
   
 end
 
@@ -64,6 +62,7 @@ class PredictORF
 
   # Return a list of predicted ORFs with :minsize AA's
   def stopstop minsize=30
+    type = "XX"
     orfs = []
     translate = Nucleotide::Translate.new(@trn_table)
     aa_frames    = translate.aa_frames(@seq)
@@ -72,8 +71,10 @@ class PredictORF
       aa = aa_frame[:sequence]
       aa_start = 0
       aa.split(/\*/).each_with_index do | candidate, num |
+        # FIXME: there may be an offset problem when the sequence
+        # starts with STOP codon
         if candidate.size >= minsize
-          orf = ORF.new(num, @id,@descr,@seq,frame,aa_start*3,candidate)
+          orf = ORF.new(num,type,@id,@descr,@seq,frame,aa_start*3,candidate)
           orfs.push orf
         end
         aa_start += candidate.size + 1

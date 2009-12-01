@@ -58,7 +58,7 @@ Get the first (and largest) ORF
 
   >> orf = orflist.first
   >> orf.descr
-  => "[0 - 183; +1] PlantGDB Arabidopsis_thaliana Jan_15_2007"
+  => "[XX 0 - 183; +1] PlantGDB Arabidopsis_thaliana Jan_15_2007"
   >> orf.id
   => "PUT-157a-Arabidopsis_thaliana-126_1"
   >> orf.aa.seq.size
@@ -104,7 +104,7 @@ Naming for each ORF
   >> orf.id
   => "PUT-157a-Arabidopsis_thaliana-126_3"
   >> orf.descr
-  => "[99 - 231; +3] PlantGDB Arabidopsis_thaliana Jan_15_2007"
+  => "[XX 99 - 231; +3] PlantGDB Arabidopsis_thaliana Jan_15_2007"
 
 If you want to know the size of the smallest ORF
 
