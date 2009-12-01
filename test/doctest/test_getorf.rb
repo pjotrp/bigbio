@@ -27,7 +27,7 @@ several heuristics to select potential ORF's and returns them with their
 reading frame and position in the nucleotide sequence. 
 
 One of the advantages of PredictORF is that it returns both the amino acid and
-nucleotide sequences.
+matching nucleotide sequences.
 
   >> require 'bigbio/sequence/predictorf'
 
@@ -58,9 +58,9 @@ Get the first (and largest) ORF
 
   >> orf = orflist.first
   >> orf.descr
-  => "PlantGDB Arabidopsis_thaliana Jan_15_2007"
+  => "[0 - 183; +1] PlantGDB Arabidopsis_thaliana Jan_15_2007"
   >> orf.id
-  => "PUT-157a-Arabidopsis_thaliana-126"
+  => "PUT-157a-Arabidopsis_thaliana-126_1"
   >> orf.aa.seq.size
   => 61
   >> orf.aa.seq
@@ -72,10 +72,39 @@ The ORF object contains more information:
   => 0
   >> orf.frame
   => 1
+
+The matching sequence with the AA
+
   >> orf.nt.seq
   => "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGTCTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCT"
+
+And it keeps track of the full nucleotide sequence
+
   >> orf.nt.fullseq
   => "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGTCTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCTAGATGCCTTTCATACTTAAAGATCAAAGGACTTGACGATGCAATAAGCTTCTCGTCTGTAAAACCC"
+
+Let's check one of the others
+
+  >> orf = orflist[3]
+  >> orf.nt.start
+  => 99
+  >> orf.nt.stop
+  => 231
+  >> orf.frame
+  => 3
+  >> orf.aa.seq
+  => "DIRFRSFSKNCIDIRNFVSKDSNSQFQLNLVDTIFTYRMLVMGF"
+  >> orf.nt.seq
+  => "GAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTT"
+  >> orf.nt.fullseq[orf.nt.start..orf.nt.stop]
+  => "GAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTT"
+
+Naming for each ORF
+
+  >> orf.id
+  => "PUT-157a-Arabidopsis_thaliana-126_3"
+  >> orf.descr
+  => "[99 - 231; +3] PlantGDB Arabidopsis_thaliana Jan_15_2007"
 
 If you want to know the size of the smallest ORF
 

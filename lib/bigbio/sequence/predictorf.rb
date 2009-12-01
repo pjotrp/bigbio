@@ -35,10 +35,13 @@ end
 
 class ORF
   attr_reader :id, :descr, :nt, :aa, :frame
-  def initialize id, descr, nt, frame, start, aa
-    @id = id
-    @descr = descr
-    @nt = ORFnucleotides.new(nt, start, start + aa.size * 3)
+  def initialize num, id, descr, nt, frame, start, aa
+    @id = id +'_'+(num+1).to_s
+    stop = start + aa.size * 3
+    fr = frame.to_s
+    fr = '+'+fr if frame > 0
+    @descr = "[#{start} - #{stop}; #{fr}] " + descr
+    @nt = ORFnucleotides.new(nt, start, stop)
     @frame = frame
     @aa = ORFaminoacids.new(aa)
   end
@@ -47,6 +50,7 @@ class ORF
     orf.aa.seq.size <=> aa.seq.size
   end
 
+  
 end
 
 class PredictORF
@@ -67,9 +71,9 @@ class PredictORF
       frame = aa_frame[:frame]
       aa = aa_frame[:sequence]
       aa_start = 0
-      aa.split(/\*/).each do | candidate |
+      aa.split(/\*/).each_with_index do | candidate, num |
         if candidate.size >= minsize
-          orf = ORF.new(@id,@descr,@seq,frame,aa_start*3,candidate)
+          orf = ORF.new(num, @id,@descr,@seq,frame,aa_start*3,candidate)
           orfs.push orf
         end
         aa_start += candidate.size + 1
