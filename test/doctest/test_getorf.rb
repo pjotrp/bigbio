@@ -52,7 +52,7 @@ we look for all ORF's between STOP codons (with a minimal size of 30 AA).
 
   >> orflist = predict.stopstop
   >> orflist.size
-  => 12
+  => 5
 
 Get the first (and largest) ORF
 
