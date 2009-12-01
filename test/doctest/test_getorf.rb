@@ -4,12 +4,18 @@
 #
 # Run with ./runner.rb or
 #
+#   env DATA=../../../biolib/src/test/data/emboss/ ruby ../../../biolib/tools/rubydoctest/bin/rubydoctest test_getorf.rb
+#
+# or
+#
 #   ruby ../../../biolib/tools/rubydoctest/bin/rubydoctest test_getorf.rb
 #
 # Documentation with rd2 -r rd/rd2html-lib *.rb
 
 cwd = File.dirname(__FILE__)
 Dir.chdir(cwd)
+
+$: << "../../lib"
 
 if $UNITTEST
 
@@ -23,8 +29,23 @@ reading frame and position in the nucleotide sequence.
 One of the advantages of PredictORF is that it returns both the amino acid and
 nucleotide sequences.
 
-  >> require 'bigbio'
-  >> predict = PredictORF.new(sequence,table)
+  >> require 'bigbio/sequence/predictorf'
+
+  >> id = "PUT-157a-Arabidopsis_thaliana-126"
+  >> descr = "PlantGDB Arabidopsis_thaliana Jan_15_2007"
+  >> sequence = "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT
+                 CTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCT
+                 TTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTC
+                 AGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCTAGATGC
+                 CTTTCATACTTAAAGATCAAAGGACTTGACGATGCAATAAGCTTCTCGTCTGTAAAACCC"
+
+Pick up the EMBOSS translation table:
+
+  >> trn_table = Biolib::Emboss.ajTrnNewI(1)
+
+Initiate the ORF prediction class
+
+  >> predict = PredictORF.new(id,descr,sequence,trn_table)
  
 The methods return a list of ORFCandidate ordered by sequence length. Here
 we look for all ORF's between STOP codons (with a minimal size of 30 AA).
