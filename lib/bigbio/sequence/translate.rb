@@ -20,6 +20,8 @@ module Nucleotide
 
       def aa_frames seq
         res = []
+        # remove white space
+        seq = seq.gsub(/\s/,'')
         ajpseq     = Biolib::Emboss.ajSeqNewNameC(seq,"Test sequence")
         [1,2,3,-1,-2,-3].each do | frame |
           ajpseqt  = Biolib::Emboss.ajTrnSeqOrig(@trn_table,ajpseq,frame)

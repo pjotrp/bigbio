@@ -52,35 +52,35 @@ we look for all ORF's between STOP codons (with a minimal size of 30 AA).
 
   >> orflist = predict.stopstop
   >> orflist.size
-  => 5
+  => 9
 
 Get the first (and largest) ORF
 
   >> orf = orflist.first
-  >> orf.name
-  => "xxxxx"
+  >> orf.descr
+  => "PlantGDB Arabidopsis_thaliana Jan_15_2007"
   >> orf.id
-  => "122"
-  >> orf.aa.size
-  => 100
+  => "PUT-157a-Arabidopsis_thaliana-126"
+  >> orf.aa.seq.size
+  => 61
   >> orf.aa.seq
-  => "AAAA"
+  => "IISNTSFLSLASKFTTRGSRLQCTVSRARSAVDETSDSGAFQRTASTSVTSFQKIPILSFS"
 
 The ORF object contains more information:
 
   >> orf.nt.start
-  => 34
+  => 0
   >> orf.frame
-  => -1
+  => 1
   >> orf.nt.seq
-  => "actg"
+  => "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGTCTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCT"
   >> orf.nt.fullseq
-  => "actxxxx"
+  => "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGTCTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCTAGATGCCTTTCATACTTAAAGATCAAAGGACTTGACGATGCAATAAGCTTCTCGTCTGTAAAACCC"
 
 If you want to know the size of the smallest ORF
 
-  >> orflist.last.aa.size
-  => 33
+  >> orflist.last.aa.seq.size
+  => 30
 
 =end
 
