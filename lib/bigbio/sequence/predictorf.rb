@@ -20,7 +20,7 @@ class ORFnucleotides < ORFsequence
   end
 
   def seq
-    @seq[@start..@stop]
+    @seq[@start..@stop-1]
   end
 
   def fullseq
@@ -37,6 +37,8 @@ class ORF
   def initialize num, type, id, descr, nt, frame, start, aa
     @id = id +'_'+(num+1).to_s
     stop = start + aa.size * 3
+    # p [start, stop, stop-start]
+    # p nt
     fr = frame.to_s
     fr = '+'+fr if frame > 0
     @descr = "[#{type} #{start} - #{stop}; #{fr}] " + descr
@@ -48,7 +50,12 @@ class ORF
   def <=> orf
     orf.aa.seq.size <=> aa.seq.size
   end
-  
+
+  def to_fastarec
+    aa = FastaRecord.new(@id,@descr,@aa.seq)
+    nt = FastaRecord.new(@id,@descr,@nt.seq)
+    FastaPairedRecord.new(nt,aa)
+  end
 end
 
 class PredictORF
