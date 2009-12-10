@@ -24,10 +24,12 @@ if $UNITTEST
 BigBio's ORF predictor uses the rapid Biolib::Emboss::transeq function to
 translate Nucleotide sequences to Amino Acid sequences. Next it allows
 several heuristics to select potential ORF's and returns them with their
-reading frame and position in the nucleotide sequence. 
+reading frame and position in the nucleotide sequence. For example all
+ORF's can be returned in the six reading frames, or simply the longest one.
 
-One of the advantages of PredictORF is that it returns both the amino acid and
-matching nucleotide sequences.
+One of the advantages of PredictORF is that it can return both the amino acid
+and exactly matching nucleotide sequences which can be useful when calculating
+dN/dS (or Ka/Ks) ratios, for example.
 
   >> require 'bigbio/sequence/predictorf'
 
@@ -114,10 +116,24 @@ Naming for each ORF
   >> orf.descr
   => "[XX 99 - 231; +3] PlantGDB Arabidopsis_thaliana Jan_15_2007"
 
-If you want to know the size of the smallest ORF
+The ORF are sorted by size, so if you want to know the size of the smallest ORF
 
   >> orflist.last.aa.seq.size
   => 30
+
+STOPSTOP (the stopstop method above) is just one heuristic. You can use
+startstop to get a list of ORF's with START codon:
+
+  >> orflist = predict.startstop
+  >> orflist.size
+  => 0
+
+Another one is to get the longest likely ORF with
+
+  >> longest = predict.longest_startstop
+  >> longest
+  => nil
+
 
 =end
 

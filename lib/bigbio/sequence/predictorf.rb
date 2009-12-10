@@ -60,7 +60,8 @@ class PredictORF
     @trn_table = trn_table
   end
 
-  # Return a list of predicted ORFs with :minsize AA's
+  # Return a list of predicted ORFs with :minsize AA's. The ORF's
+  # are between STOP codons (so sequences without START are included)
   def stopstop minsize=30
     type = "XX"
     orfs = []
@@ -83,4 +84,20 @@ class PredictORF
     orfs.sort
   end
 
+  # Return a list of predicted ORFs with :minsize AA's. The ORF's
+  # are between START and STOP codons (ATG, TTG, CTG and AUG, UUG and CUG for
+  # now, a later version should use the EMBOSS translation table).
+  def startstop minsize=30
+    stopstop(minsize).find_all { | orf | 
+      codon1= orf.nt.seq[0..2].upcase
+      ['ATG','TTG','CTG','AUG','UUG','CUG'].index(codon1) != nil
+    }
+  end 
+
+  # Return the longest ORF that has a START codon (see +startstop+)
+  # Returns nil if none is found
+  def longest_startstop
+    startstop(0).first
+  end
+    
 end
