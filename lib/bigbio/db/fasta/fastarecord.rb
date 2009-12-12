@@ -22,8 +22,13 @@ class FastaPairedRecord
       nt.seq.chop!
       aa.seq.chop!
     end
+    if nt.seq.size == aa.seq.size*3-2
+      # account for EMBOSS cleverness
+      nt.seq.chop!
+      aa.seq.chop!
+    end
       
-    raise "Sequence size mismatch for #{nt.id} (nt:#{nt.seq.size} != #{aa.seq.size}*3)" if nt.seq.size != aa.seq.size*3
+    raise "Sequence size mismatch for #{nt.id} <nt:#{nt.seq.size} != #{aa.seq.size*3} (aa:#{aa.seq.size}*3)>" if nt.seq.size != aa.seq.size*3
   end
 
   def id

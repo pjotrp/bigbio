@@ -41,7 +41,9 @@ ARGV.each do | fn |
   nt.each do | rec |
     predict = PredictORF.new(rec.id,rec.descr,rec.seq,trn_table)
     orflist = predict.send(heuristic)
-    out.write(orflist.first.to_fastarec)
+    orflist.each do | orf |
+      out.write(orf.to_fastarec)
+    end
   end
 end
 
