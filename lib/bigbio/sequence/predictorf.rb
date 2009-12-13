@@ -41,7 +41,7 @@ class ORF
     # p nt
     fr = frame.to_s
     fr = '+'+fr if frame > 0
-    @descr = "[#{type} #{start} - #{stop}; #{fr}] " + descr
+    @descr = "[#{type} #{fr} #{start} - #{stop}; #{stop-start}/#{nt.size}] " + descr
     @nt = ORFnucleotides.new(nt, start, stop)
     @frame = frame
     @aa = ORFaminoacids.new(aa)
@@ -73,17 +73,19 @@ class PredictORF
     type = "XX"
     orfs = []
     translate = Nucleotide::Translate.new(@trn_table)
-    aa_frames    = translate.aa_frames(@seq)
+    aa_frames = translate.aa_frames(@seq)
+    num = 0
     aa_frames.each do | aa_frame |
       frame = aa_frame[:frame]
       aa = aa_frame[:sequence]
       aa_start = 0
-      aa.split(/\*/).each_with_index do | candidate, num |
+      aa.split(/\*/).each do | candidate |
         # FIXME: there may be an offset problem when the sequence
         # starts with STOP codon
         if candidate.size >= minsize
           orf = ORF.new(num,type,@id,@descr,@seq,frame,aa_start*3,candidate)
           orfs.push orf
+          num += 1
         end
         aa_start += candidate.size + 1
       end

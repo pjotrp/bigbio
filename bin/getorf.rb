@@ -31,6 +31,7 @@ if ARGV[0] == '-h'
   ARGV.shift
 end
 
+print "getorf #{heuristic}\n"
 out = FastaPairedWriter.new('nt_'+heuristic+'.fa','aa_'+heuristic+'.fa')
 
 ARGV.each do | fn |
