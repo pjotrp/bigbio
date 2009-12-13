@@ -12,7 +12,7 @@
 BIGBIO_VERSION= 'BigBio 0.00 (c) Pjotr Prins 2009'
 
 USAGE =<<EOM
-  ruby #{__FILE__} [-h startstop] inputfile(s)
+  ruby #{__FILE__} [-h stopstop] [--min-size 30] inputfile(s)
 EOM
 
 $: << File.dirname(__FILE__)+'/../lib'
@@ -22,9 +22,9 @@ require 'bigbio'
 require 'optparse'
 
 print "getorf ",BIGBIO_VERSION,"\n"
-print USAGE if ARGV.size == 0
 
 heuristic = 'stopstop'
+minsize   = 30
 opts = OptionParser.new() { |opts|
   opts.on_tail("-?", "--help", "Print this message") {
     print(USAGE)
@@ -39,10 +39,18 @@ EXAMPLE
   opts.on("-h heuristic", String, "Heuristic (stopstop)") do | s |
     heuristic = s
   end
+  opts.on("-s size", "--min-size", Integer, "Minimal sequence size") do | n |
+    minsize = n
+  end
 }
 opts.parse!(ARGV)
+if ARGV.size == 0
+  print USAGE
+  exit 1
+end
 
 print "Heuristic is #{heuristic}\n"
+print "Minsize #{minsize}\n"
 
 out = FastaPairedWriter.new('nt_'+heuristic+'.fa','aa_'+heuristic+'.fa')
 
@@ -53,7 +61,7 @@ ARGV.each do | fn |
 
   nt.each do | rec |
     predict = PredictORF.new(rec.id,rec.descr,rec.seq,trn_table)
-    orflist = predict.send(heuristic)
+    orflist = predict.send(heuristic,minsize)
     orflist.each do | orf |
       out.write(orf.to_fastarec)
     end
