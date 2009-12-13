@@ -9,6 +9,8 @@
 #
 # (: pjotrp 2009 rblicense :)
 
+BIGBIO_VERSION= 'BigBio 0.00 (c) Pjotr Prins 2009'
+
 USAGE =<<EOM
   ruby #{__FILE__} [-h startstop] inputfile(s)
 EOM
@@ -17,21 +19,31 @@ $: << File.dirname(__FILE__)+'/../lib'
 
 require 'biolib/emboss'
 require 'bigbio'
+require 'optparse'
 
-if ARGV.size < 1
-  print USAGE
-  exit 1
-end
+print "getorf ",BIGBIO_VERSION,"\n"
+print USAGE if ARGV.size == 0
 
 heuristic = 'stopstop'
+opts = OptionParser.new() { |opts|
+  opts.on_tail("-?", "--help", "Print this message") {
+    print(USAGE)
+    print(opts)
+    print <<EXAMPLE
+    
+   
+EXAMPLE
+    exit()
+  }
+   
+  opts.on("-h heuristic", String, "Heuristic (stopstop)") do | s |
+    heuristic = s
+  end
+}
+opts.parse!(ARGV)
 
-if ARGV[0] == '-h'
-  heuristic = ARGV[1]
-  ARGV.shift
-  ARGV.shift
-end
+print "Heuristic is #{heuristic}\n"
 
-print "getorf #{heuristic}\n"
 out = FastaPairedWriter.new('nt_'+heuristic+'.fa','aa_'+heuristic+'.fa')
 
 ARGV.each do | fn |
