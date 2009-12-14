@@ -23,7 +23,7 @@ if $UNITTEST
 =begin
 
   >> $: << '../../lib'
-  >> require 'biobig'
+  >> require 'bigbio'
   >> TESTDIR = '../data/fasta'
   >> nt_FILE = TESTDIR + "/nt.fa"
   >> AA_FILE = TESTDIR + "/aa.fa"

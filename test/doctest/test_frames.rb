@@ -48,6 +48,8 @@ We should have six frames
    >> aa[:frame]
    => 1
 
+This result matches the one from the EMBOSS web interface:
+
    >> aa[:sequence] 
    => "IISNTSFLSLASKFTTRGSRLQCTVSRARSAVDETSDSGAFQRTASTSVTSFQKIPILSFS*IW*IPSLHIVCLSWASRCLSYLKIKGLDDAISFSSVKP"
 
