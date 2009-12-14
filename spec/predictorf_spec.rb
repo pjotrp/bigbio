@@ -7,13 +7,6 @@ require 'bigbio'
 describe PredictORF, " when using a short simple nucleotide sequence" do
   before :all do 
     # initialize
-    # id = "PUT-157a-Arabidopsis_thaliana-126"
-    # descr = "PlantGDB Arabidopsis_thaliana Jan_15_2007"
-    #  sequence = "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT
-    #             CTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCT
-    #             TTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTC
-    #             AGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCTAGATGC
-    #             CTTTCATACTTAAAGATCAAAGGACTTGACGATGCAATAAGCTTCTCGTCTGTAAAACCC"
     id = 'test'
     descr = 'Test'
     # sequence = 'AGCTGAATCTGGTAGATACCATCTTTAA'
@@ -96,4 +89,66 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     orf.aa.seq.should == "QIQL"
     orf.nt.seq.should == "TCTAAGTCGA"
   end
+end
+
+describe PredictORF, " when using a more complicated nucleotide sequence" do
+  before :all do 
+    # initialize
+    id = "PUT-157a-Arabidopsis_thaliana-126"
+    descr = "PlantGDB Arabidopsis_thaliana Jan_15_2007"
+    sequence = "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT
+                CTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCT
+                TTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTC
+                AGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCTAGATGC
+                CTTTCATACTTAAAGATCAAAGGACTTGACGATGCAATAAGCTTCTCGTCTGTAAAACCC"
+    trn_table = Biolib::Emboss.ajTrnNewI(1)
+    @predictorf = PredictORF.new(id,descr,sequence,trn_table)
+    orflist = @predictorf.stopstop(0)
+    orflist.each do | orf | p [orf.descr,orf.aa.seq,orf.nt.seq] end
+    # >EMBOSS_001_1
+    # IISNTSFLSLASKFTTRGSRLQCTVSRARSAVDETSDSGAFQRTASTSVTSFQKIPILSF
+    # S*IW*IPSLHIVCLSWASRCLSYLKIKGLDDAISFSSVKP
+    # >EMBOSS_001_2
+    # SLATPASSLSLQSSLLVDLVFSVQYQGLDLRWMRHQIQELFKELHRHP*LRFKRFQFSVS
+    # AESGRYHLYISYACHGLLDAFHT*RSKDLTMQ*ASRL*N
+    # >EMBOSS_001_3
+    # H*QHQLPLSRFKVHYSWISSSVYSIKGSICGG*DIRFRSFSKNCIDIRNFVSKDSNSQFQ
+    # LNLVDTIFTYRMLVMGF*MPFILKDQRT*RCNKLLVCKT
+    # >EMBOSS_001_4
+    # GFYRREAYCIVKSFDL*V*KASRSP*QAYDM*RWYLPDSAETENWNLLKRSYGCRCSSLK
+    # SS*I*CLIHRRSSP*YCTLKTRSTSSEL*SEREEAGVAND
+    # >EMBOSS_001_5
+    # VLQTRSLLHRQVL*SLSMKGI*KPMTSIRYVKMVSTRFS*N*ELESFETKLRMSMQFFEK
+    # LLNLMSHPPQIEPLILYTEDEIHE**TLKRERGSWCC**X
+    # >EMBOSS_001_6
+    # GFTDEKLIASSSPLIFKYERHLEAHDKHTICKDGIYQIQLKLRIGIF*NEVTDVDAVL*K
+    # APESDVSSTADRALDTVH*RRDPRVVNFEARERKLVLLMX
+  end
+
+  it "stopstop(0) should render 33 reading frames and seven ORF" do
+    orflist = @predictorf.stopstop(0)
+    orflist.size.should == 33
+  end
+
+  it "should never return an empty sequence" do
+    orflist = @predictorf.stopstop(0)
+    orflist.each do | orf |
+      orf.nt.seq.size.should >= 0
+    end
+  end
+
+  it "should return 3 sequences when the minsize is 132" do
+    orflist = @predictorf.stopstop(44)
+    orflist.size.should == 4
+  end
+
+  it "should return 2 sequences when the minsize is 133" do
+    orflist = @predictorf.stopstop(45)
+    orflist.size.should == 3
+  end
+
+  it "should correctly handle a double STOP codon"
+
+  it "should correctly handle a sequence starting with a STOP codon"
+
 end

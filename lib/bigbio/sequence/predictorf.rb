@@ -88,9 +88,7 @@ class PredictORF
       aa = aa_frame[:sequence]
       aa_start = 0
       aa.split(/\*/).each do | candidate |
-        # FIXME: there may be an offset problem when the sequence
-        # starts with STOP codon
-        if candidate.size >= minsize
+        if candidate.size >= minsize and candidate.size > 0
           orf = ORF.new(num,type,@id,@descr,@seq,frame,aa_start*3,candidate)
           orfs.push orf
           num += 1
