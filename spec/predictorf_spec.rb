@@ -4,6 +4,8 @@ ENV['DATA'] = '../test/data/EMBOSS'
 
 require 'bigbio'
 
+# Note that PredictORF, at this point, leaves trailing X's for the AA sequence
+
 describe PredictORF, " when using a short simple nucleotide sequence" do
   before :all do 
     # initialize
@@ -14,7 +16,7 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     trn_table = Biolib::Emboss.ajTrnNewI(1)
     @predictorf = PredictORF.new(id,descr,sequence,trn_table)
     @orflist = @predictorf.stopstop(0)
-    @orflist.each do | orf | p [orf.descr,orf] end
+    # @orflist.each do | orf | p [orf.descr,orf] end
   end
 
   it "stopstop(0) should render six reading frames and seven ORF" do
@@ -101,10 +103,10 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
                 TTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTC
                 AGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCTAGATGC
                 CTTTCATACTTAAAGATCAAAGGACTTGACGATGCAATAAGCTTCTCGTCTGTAAAACCC"
-    trn_table = Biolib::Emboss.ajTrnNewI(1)
-    @predictorf = PredictORF.new(id,descr,sequence,trn_table)
+    @trn_table = Biolib::Emboss.ajTrnNewI(1)
+    @predictorf = PredictORF.new(id,descr,sequence,@trn_table)
     orflist = @predictorf.stopstop(0)
-    orflist.each do | orf | p [orf.descr,orf.aa.seq,orf.nt.seq] end
+    # orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
     # >EMBOSS_001_1
     # IISNTSFLSLASKFTTRGSRLQCTVSRARSAVDETSDSGAFQRTASTSVTSFQKIPILSF
     # S*IW*IPSLHIVCLSWASRCLSYLKIKGLDDAISFSSVKP
@@ -147,8 +149,22 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
     orflist.size.should == 3
   end
 
-  it "should correctly handle a double STOP codon"
+  it "should correctly handle a double STOP codon" do
+    # Frame 5: ELESFETKLRMSMQFFEKLLNLMSHPPQIEPLILYTEDEIHE**TLKRERGSWCC**X
+    orflist = @predictorf.stopstop(0)
+    orflist[4].aa.seq.should == "ELESFETKLRMSMQFFEKLLNLMSHPPQIEPLILYTEDEIHE"
+    orflist[17].aa.seq.should == "TLKRERGSWCC"
+    orflist[29].aa.seq.should == "X"
+  end
 
-  it "should correctly handle a sequence starting with a STOP codon"
+  it "should correctly handle a sequence starting with a STOP codon" do
+    sequence = "ATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT"
+    # >EMBOSS_001_3
+    # *QHQLPLSRFKVHYSWIS
+    predictorf = PredictORF.new('test','TEST',sequence,@trn_table)
+    orflist = predictorf.stopstop(0)
+    # orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
+    orflist[3].aa.seq.should == "QHQLPLSRFKVHYSWISX"
+  end
 
 end
