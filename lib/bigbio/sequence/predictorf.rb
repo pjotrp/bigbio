@@ -36,7 +36,15 @@ class ORF
   attr_reader :id, :descr, :nt, :aa, :frame
   def initialize num, type, id, descr, nt, frame, start, aa
     @id = id +'_'+(num+1).to_s
+    # ---- adjust start to match frame
+    start += frame.abs-1
+    # ---- stop should not go beyond sequence
     stop = start + aa.size * 3
+    if stop > nt.size
+      stop = nt.size
+    end
+    # ---- if frame < 0 it should reverse
+    nt = nt.reverse if frame < 0
     # p [start, stop, stop-start]
     # p nt
     fr = frame.to_s
