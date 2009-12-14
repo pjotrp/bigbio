@@ -4,11 +4,7 @@
 #
 # Run with ./runner.rb or
 #
-#   env DATA=../../../biolib/src/test/data/emboss/ ruby ../../../biolib/tools/rubydoctest/bin/rubydoctest test_getorf.rb
-#
-# or
-#
-#   ruby ../../../biolib/tools/rubydoctest/bin/rubydoctest test_getorf.rb
+#   env DATA=../data/EMBOSS/ ruby ../../../biolib/tools/rubydoctest/bin/rubydoctest test_getorf.rb
 #
 # Documentation with rd2 -r rd/rd2html-lib *.rb
 
@@ -70,7 +66,7 @@ The description contains 'XX' for the STOPSTOP search. Unlike getorf it shows
 the reading frame.
 
   >> orf.descr
-  => "[XX 0 - 183; +1] PlantGDB Arabidopsis_thaliana Jan_15_2007"
+  => "[XX +1 0 - 183; 183/300] PlantGDB Arabidopsis_thaliana Jan_15_2007"
   >> orf.aa.seq.size
   => 61
   >> orf.aa.seq
@@ -86,7 +82,7 @@ The ORF object contains more information:
 The matching sequence with the AA
 
   >> orf.nt.seq
-  => "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGTCTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCT"
+  => "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGTCTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGC"
 
 And it keeps track of the full nucleotide sequence
 
@@ -96,25 +92,25 @@ And it keeps track of the full nucleotide sequence
 Let's check one of the others
 
   >> orf = orflist[3]
-  >> orf.nt.start
-  => 99
-  >> orf.nt.stop
-  => 231
   >> orf.frame
   => 3
+  >> orf.nt.start
+  => 101
+  >> orf.nt.stop
+  => 233
   >> orf.aa.seq
   => "DIRFRSFSKNCIDIRNFVSKDSNSQFQLNLVDTIFTYRMLVMGF"
   >> orf.nt.seq
-  => "GAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTT"
+  => "GACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTC"
   >> orf.nt.fullseq[orf.nt.start..orf.nt.stop]
-  => "GAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTT"
+  => "GACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCT"
 
 Naming for each ORF
 
   >> orf.id
-  => "PUT-157a-Arabidopsis_thaliana-126_3"
+  => "PUT-157a-Arabidopsis_thaliana-126_6"
   >> orf.descr
-  => "[XX 99 - 231; +3] PlantGDB Arabidopsis_thaliana Jan_15_2007"
+  => "[XX +3 101 - 233; 132/300] PlantGDB Arabidopsis_thaliana Jan_15_2007"
 
 The ORF are sorted by size, so if you want to know the size of the smallest ORF
 
@@ -131,8 +127,8 @@ startstop to get a list of ORF's with START codon:
 Another one is to get the longest likely ORF with
 
   >> longest = predict.longest_startstop
-  >> longest
-  => nil
+  >> longest.aa.seq.size
+  => 21
 
 
 =end
