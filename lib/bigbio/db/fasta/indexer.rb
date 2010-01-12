@@ -25,5 +25,8 @@ module Indexer
     @indexer[key] 
   end
 
+  def indexer_get_by_index idx
+    @indexer.sort {|a,b| a[1]<=>b[1]} [idx]
+  end
 end
 

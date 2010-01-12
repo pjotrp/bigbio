@@ -51,11 +51,7 @@ class FastaReader
 
   # Return a record by its +id+, nil when not found
   def get id
-    if @indexer and !@fread_once
-      # force indexer
-      # $stderr.print "Force indexer"
-      parse_each { | x, y, z | nil }
-    end
+    indexed?
     if fpos = indexer_get(id)
       get_rec(fpos)
     else
@@ -75,7 +71,16 @@ class FastaReader
     id, descr = digest_tag(tag)
     FastaRecord.new(id,descr,seq)
   end
-  
+
+  def get_by_index idx
+    indexed?
+    if fpos = indexer_get_by_index(idx)[1]
+      ret = get_rec(fpos)
+      return ret
+    end
+    nil
+  end
+
   def digest_tag tag
     if tag =~ /^>/
       descr = $'.strip
@@ -98,4 +103,16 @@ class FastaReader
   def close
     @f.close
   end
+
+  private
+
+  def indexed?
+    if @indexer and !@fread_once
+      # force indexer
+      # $stderr.print "Force indexer"
+      parse_each { | x, y, z | nil }
+    end
+    true
+  end
+
 end
