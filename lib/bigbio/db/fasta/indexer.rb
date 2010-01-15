@@ -5,6 +5,7 @@
 
 module Indexer
 
+  # Start using the indexer
   def indexer_use state
     if state
       @indexer = {}
@@ -13,7 +14,7 @@ module Indexer
 
   def indexer_set key, fpos
     raise "Trying to use 'set' when there is no index" if @indexer == nil
-    raise "Indexer key #{key} alread in use!" if @indexer[key]
+    raise "Indexer key #{key} alread in use for <#{@indexer[key]}>!" if @indexer[key]
     # p [key, fpos]
     @indexer[key] = fpos
   end
