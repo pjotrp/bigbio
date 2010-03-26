@@ -56,6 +56,12 @@ class FastaReader
     parse_each { | id, descr, seq | yield FastaRecord.new(id, descr, seq) }
   end
 
+  def first
+    parse_each { | id, descr, seq | 
+      return FastaRecord.new(id, descr, seq) 
+    }
+  end
+
   # Return a record by its +id+, nil when not found
   def get id
     indexed?
