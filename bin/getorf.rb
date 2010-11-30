@@ -25,12 +25,13 @@ print "getorf ",BIGBIO_VERSION,"\n"
 
 heuristic = 'stopstop'
 minsize   = 30
+longest_match = false
+
 opts = OptionParser.new() { |opts|
   opts.on_tail("-?", "--help", "Print this message") {
     print(USAGE)
     print(opts)
     print <<EXAMPLE
-    
    
 EXAMPLE
     exit()
@@ -41,6 +42,9 @@ EXAMPLE
   end
   opts.on("-s size", "--min-size", Integer, "Minimal sequence size") do | n |
     minsize = n
+  end
+  opts.on("--longest", "Only get longest ORF match") do 
+    longest_match = true
   end
 }
 opts.parse!(ARGV)
@@ -61,9 +65,14 @@ ARGV.each do | fn |
 
   nt.each do | rec |
     predict = PredictORF.new(rec.id,rec.descr,rec.seq,trn_table)
-    orflist = predict.send(heuristic,minsize)
-    orflist.each do | orf |
-      out.write(orf.to_fastarec)
+    if longest_match
+      orf = predict.send('longest_'+heuristic,minsize)
+      out.write(orf.to_fastarec) if orf
+    else
+      orflist = predict.send(heuristic,minsize)
+      orflist.each do | orf |
+        out.write(orf.to_fastarec)
+      end
     end
   end
 end

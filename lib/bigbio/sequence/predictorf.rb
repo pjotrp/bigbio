@@ -111,8 +111,8 @@ class PredictORF
 
   # Return the longest ORF that has a START codon (see +startstop+)
   # Returns nil if none is found
-  def longest_startstop
-    startstop(0).first
+  def longest_startstop minsize=0
+    startstop(minsize).first
   end
     
 end
