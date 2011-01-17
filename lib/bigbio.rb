@@ -15,15 +15,14 @@ end
 require 'bio-logger'
 
 log = Bio::Log::LoggerPlus.new('bigbio')
-Bio::Big::Evironment.instance.log = log
+Bio::Big::Environment.instance.log = log
 
 begin
   require 'biolib/emboss'
-  Bio::Big::Evironment.instance.biolib? = true
+  Bio::Big::Environment.instance.biolib = true
 rescue LoadError
   log.outputters = Bio::Log::Outputter.stderr
   log.warn "BioLib functionality not loaded"
-  Bio::Big::Evironment.instance.biolib? = false
 end
 
 

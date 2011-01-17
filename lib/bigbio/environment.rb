@@ -6,7 +6,7 @@ module Bio
     class Environment
       include Singleton
 
-      attr_accessor :log, :biolib?
+      attr_accessor :log, :biolib
     end
   end
 end
