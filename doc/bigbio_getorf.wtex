@@ -1,0 +1,14 @@
+
+== ORF Prediction ==
+
+The ORF 'predictor' is of the simple kind. It detects ORFs by
+identifying start and stop signals in the same frame.
+
+The main feature is that it does not consume real memory through the
+use of a Sequence 'emitter', which scans a large input sequence and
+yields open reading frames from STOP to STOP codon, with adjoining
+nucleotides. This allows scanning the sequence in a *single* pass.
+
+The input file maybe Fasta, as long as the reader yields chunks of
+sequence data.
+
