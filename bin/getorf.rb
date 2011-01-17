@@ -1,27 +1,32 @@
 #! /usr/bin/ruby
 #
-# Predict ORF's from nucleotide sequences using the EMBOSS translation routine
-# and the BigBio predictors. The input is a fasta file, the output consists of
+# Predict ORF's from nucleotide sequences using the BigBio predictors. 
+# The input is a fasta file, the output consists of
 # a FASTA amino acid sequence file with matching nucleotide sequences
 # (aa_heuristic.fa and nt_heuristic.fa respectively)
 #
 # You can choose the heuristic on the command line (default stopstop).
 #
-# (: pjotrp 2009 rblicense :)
+# Author:: Pjotr Prins
+# Copyright:: 2009-2011
+# License:: Ruby License
+#
+# Copyright (C) 2009-2011 Pjotr Prins <pjotr.prins@thebird.nl>
 
-BIGBIO_VERSION= 'BigBio 0.00 (c) Pjotr Prins 2009'
+rootpath = File.dirname(File.dirname(__FILE__))
+$: << File.join(rootpath,'lib')
+
+BIGBIO_VERSION = File.new(File.join(rootpath,'VERSION')).read.chomp
 
 USAGE =<<EOM
   ruby #{__FILE__} [-h stopstop] [--min-size 30] inputfile(s)
 EOM
 
-$: << File.dirname(__FILE__)+'/../lib'
-
-require 'biolib/emboss'
+# require 'biolib/emboss'
 require 'bigbio'
 require 'optparse'
 
-print "getorf ",BIGBIO_VERSION,"\n"
+$stderr.print "getorf BioRuby BigBio Plugin "+BIGBIO_VERSION+" Copyright (C) 2009-2011 Pjotr Prins <pjotr.prins@thebird.nl>\n\n"
 
 heuristic = 'stopstop'
 minsize   = 30
