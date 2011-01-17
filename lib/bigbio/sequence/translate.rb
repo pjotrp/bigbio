@@ -7,11 +7,13 @@ module Nucleotide
 
   class Translate
 
+    include Bio::Big::TranslationAdapter
+
       # Table can be either an id (integer) or a Biolib::Emboss TrnTable
 
       def initialize table
         if table.kind_of? Numeric
-          @trn_table = Biolib::Emboss.ajTrnNewI(table)
+          @trn_table = translation_table(table)
         else
           @trn_table = table
         end
@@ -24,10 +26,8 @@ module Nucleotide
         res = []
         # remove white space
         seq = seq.gsub(/\s/,'')
-        ajpseq     = Biolib::Emboss.ajSeqNewNameC(seq,"Test sequence")
         [1,2,3,-1,-2,-3].each do | frame |
-          ajpseqt  = Biolib::Emboss.ajTrnSeqOrig(@trn_table,ajpseq,frame)
-          aa       = Biolib::Emboss.ajSeqGetSeqCopyC(ajpseqt)
+          aa = translate(@trn_table,frame,seq)
           res.push({:frame => frame, :sequence => aa})
         end
         res

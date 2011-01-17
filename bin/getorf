@@ -91,24 +91,24 @@ Bio::Log::CLI.configure('bigbio')
 print "Heuristic is #{heuristic}\n"
 print "Minsize #{minsize}\n"
 
-out = FastaPairedWriter.new('nt_'+heuristic+'.fa','aa_'+heuristic+'.fa')
-
 ARGV.each do | fn |
   raise "File #{fn} does not exist" if !File.exist?(fn)
   nt = FastaReader.new(fn)
-  trn_table = Biolib::Emboss.ajTrnNewI(1);
+
+  include Bio::Big::TranslationAdapter
+  trn_table = translation_table(1)
 
   nt.each do | rec |
     predict = PredictORF.new(rec.id,rec.descr,rec.seq,trn_table)
-    if longest_match
-      orf = predict.send('longest_'+heuristic,minsize)
-      out.write(orf.to_fastarec) if orf
-    else
+    # if longest_match
+    #   orf = predict.send('longest_'+heuristic,minsize)
+    #   out.write(orf.to_fastarec) if orf
+    # else
       orflist = predict.send(heuristic,minsize)
       orflist.each do | orf |
-        out.write(orf.to_fastarec)
+        p orf
       end
-    end
+    # end
   end
 end
 
