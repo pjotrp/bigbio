@@ -93,12 +93,12 @@ print "Minsize #{minsize}\n"
 
 ARGV.each do | fn |
   raise "File #{fn} does not exist" if !File.exist?(fn)
-  nt = FastaReader.new(fn)
+  nt = Bio::Big::FastaEmitter.new(fn)
 
   include Bio::Big::TranslationAdapter
   trn_table = translation_table(1)
 
-  nt.each do | rec |
+  nt.emit_seq(30) do | state, tag, seq |
     predict = PredictORF.new(rec.id,rec.descr,rec.seq,trn_table)
     # if longest_match
     #   orf = predict.send('longest_'+heuristic,minsize)

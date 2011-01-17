@@ -1,4 +1,4 @@
-# FastaReader
+# Indexed FastaReader
 #
 
 require 'bigbio/db/fasta/indexer'
@@ -102,7 +102,7 @@ class FastaReader
         # p [descr,id]
         return id, descr
       end
-      p descr
+      p descr  # do not remove these
       p @regex
     end
     raise "Can not digest '#{tag}' using '"+@regex+"'"
