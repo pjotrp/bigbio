@@ -1,7 +1,9 @@
 
-require 'biolib/emboss'
 
 module Nucleotide
+
+  module TranslationTable
+  end
 
   class Translate
 

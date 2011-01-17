@@ -20,6 +20,9 @@ BIGBIO_VERSION = File.new(File.join(rootpath,'VERSION')).read.chomp
 
 USAGE =<<EOM
   ruby #{__FILE__} [-h stopstop] [--min-size 30] inputfile(s)
+
+  Use --help for more options
+
 EOM
 
 # require 'biolib/emboss'
@@ -27,6 +30,9 @@ require 'bigbio'
 require 'optparse'
 
 $stderr.print "getorf BioRuby BigBio Plugin "+BIGBIO_VERSION+" Copyright (C) 2009-2011 Pjotr Prins <pjotr.prins@thebird.nl>\n\n"
+
+Bio::Log::CLI.logger('stderr')
+Bio::Log::CLI.trace('info')
 
 heuristic = 'stopstop'
 minsize   = 30
@@ -51,12 +57,36 @@ EXAMPLE
   opts.on("--longest", "Only get longest ORF match") do 
     longest_match = true
   end
+
+  opts.on("--logger filename",String,"Log to file (default stderr)") do | name |
+    Bio::Log::CLI.logger(name)
+  end
+
+  opts.on("--trace options",String,"Set log level (default INFO, see bio-logger)
+") do | s |
+    Bio::Log::CLI.trace(s)
+  end
+
+  opts.on("-q", "--quiet", "Run quietly") do |q|
+    Bio::Log::CLI.trace('error')
+  end
+
+  opts.on("-v", "--verbose", "Run verbosely") do |v|
+    Bio::Log::CLI.trace('info')
+  end
+
+  opts.on("--debug", "Show debug messages") do |v|
+    Bio::Log::CLI.trace('debug')
+    options.debug = true
+  end
 }
 opts.parse!(ARGV)
 if ARGV.size == 0
   print USAGE
   exit 1
 end
+
+Bio::Log::CLI.configure('bigbio')
 
 print "Heuristic is #{heuristic}\n"
 print "Minsize #{minsize}\n"
