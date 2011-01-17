@@ -1,0 +1,38 @@
+= BIGBIO =
+
+BigBio = BIG DATA computing (for Ruby)
+
+BigBio is an initiative to a create high performance libraries for big data
+computing in biology - initially for the Ruby language. 
+
+The Ruby version of BigBio uses BioRuby, when sensible, but provides an
+interface with a different design.
+
+Also, unlike BioRuby which aims to be pure Ruby, it uses BioLib C/C++ functions
+for increased performance and reduced memory consumption.
+
+Note: this software is in its early stages.
+
+If you wish to contribute subscribe to the BioLib mailing list.
+
+Pjotr Prins
+
+= bio-bigbio
+
+Description goes here.
+
+== Contributing to bio-bigbio
+ 
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
+* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
+* Fork the project
+* Start a feature/bugfix branch
+* Commit and push until you are happy with your contribution
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+== Copyright
+
+Copyright (c) 2011 Pjotr Prins. See LICENSE.txt for
+further details.
+
