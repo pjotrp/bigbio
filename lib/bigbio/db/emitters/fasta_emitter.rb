@@ -11,7 +11,7 @@ module Bio
       # size - usually iterators load the full sequence, but
       # without penalty it is possible to use a lot less 
       # memory.
-      def emit_seq max_size=10000
+      def emit_seq 
         f = File.open(@fn)
         tag = tag_digest(f.gets.strip)
         seq = ""
