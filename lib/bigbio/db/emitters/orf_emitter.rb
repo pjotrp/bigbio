@@ -59,12 +59,17 @@ module Bio
       end
 
       def stopstop?
+        found?({ | codon | STOP_CODONS.include?(codon) }, 
+               { | codon | STOP_CODONS.include?(codon) })
+      end
+
+      def found? &func1, &func2
         codons = added_codons
         codon1 = 0
         if @start == nil
           # look for first STOP codon
           codons.each_with_index { | codon, idx | 
-            if STOP_CODONS.include? codon
+            if func1.call(codon)
               codon1 = idx
               @start = idx * 3 + @c_pos
               break
@@ -74,7 +79,7 @@ module Bio
         if @start != nil and @stop == nil
           # look for 2nd STOP codon
           codons[codon1+1..-1].each_with_index { | codon, idx |
-            if STOP_CODONS.include? codon
+            if func2.call(codon)
               # p [idx,codon]
               @stop = (codon1 + 1 + idx)*3 + @c_pos 
               break
