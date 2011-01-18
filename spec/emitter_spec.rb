@@ -8,7 +8,7 @@ describe Bio::Big::FastaEmitter, "when using the emitter" do
 
   it "should emit small parts" do
     s = ""
-    FastaEmitter.new("test/data/fasta/nt.fa").emit_seq(10) do | part, index, tag, seq |
+    FastaEmitter.new("test/data/fasta/nt.fa",10).emit_seq do | part, index, tag, seq |
       # p [index, part, tag, seq]
       s += seq
       if index == 95 and part == :tail
@@ -34,7 +34,7 @@ describe Bio::Big::OrfEmitter, "when using the ORF emitter" do
 
   it "should emit STOP-STOP ORFs in all frames" do
     f = FastaEmitter.new("test/data/fasta/nt.fa")
-    OrfEmitter.new(f)::emit_seq(:stopstop) do | index, tag, seq |
+    OrfEmitter.new(f,:stopstop)::emit_seq do | index, tag, seq |
       p [index, tag, seq]
     end
   end

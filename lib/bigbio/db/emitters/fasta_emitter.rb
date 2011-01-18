@@ -3,8 +3,9 @@ module Bio
   module Big
     class FastaEmitter
 
-      def initialize fn
+      def initialize fn, max_size = 100000
         @fn = fn
+        @max_size = max_size
       end
 
       # Yield sequence information in sections of a maximum
@@ -26,9 +27,9 @@ module Bio
           else
             seq += line
           end
-          while seq.size > max_size
-            yield :mid,index,tag,seq[0..max_size-1]
-            seq = seq[max_size..-1]
+          while seq.size > @max_size
+            yield :mid,index,tag,seq[0..@max_size-1]
+            seq = seq[@max_size..-1]
           end
         end while !f.eof
         yield :tail,index,tag,seq
