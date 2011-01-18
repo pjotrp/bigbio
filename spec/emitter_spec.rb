@@ -33,10 +33,16 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
   include Bio::Big
   
   it "should find an ORF" do
-    fr = ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa"
+    fr = ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa",0
     fr.get_stopstop_orfs.should == ["ATGTAA", "TGGATTTAA"]
-    fr.get_startstop_orfs.should == ["ATGTAA", "TGGATTTAA"]
+    fr.get_startstop_orfs.should == ["ATGGATTAA", "ATGTAA"]
   end
+  it "should handle min_size" do
+    fr = ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa",9
+    fr.get_stopstop_orfs.should == ["TGGATTTAA"]
+    fr.get_startstop_orfs.should == []
+  end
+
 
 end
 

@@ -37,7 +37,7 @@ module Bio
     class ShortFrameState
       def initialize seq, min_size = 30
         @seq = seq.upcase  
-        @min_size = min_size
+        @min_size = (min_size/3).to_i+1
         @codons = @seq.scan(/(\w\w\w)/).flatten
       end
 
@@ -52,23 +52,32 @@ module Bio
         list = get_codon_orfs2(
                  Proc.new { | codon | START_CODONS.include?(codon) },
                  Proc.new { | codon | STOP_CODONS.include?(codon) })
+        p list
         list.map { |codons| 
-          codons[1..-1].join
+          codons.join
         }
       end
 
       def get_codon_orfs1 func, checkfirst=true
-        orf = split(@codons,func)
+        orfs = split(@codons,func)
         # Drop the first one, if there is no match on the first position
-        if checkfirst and !func.call(orf.first[0])
-          orf.shift
+        if checkfirst and orfs.size>1 and !func.call(orfs.first[0])
+          orfs.shift
         end
-        orf
+        orfs
       end
 
       def get_codon_orfs2 func1, func2
-        orf = get_codon_orfts1(func1,false)
-        orf
+        orfs = get_codon_orfs1(func2,false)
+        p orfs
+        # Check the first one for a start codon
+        head = orfs.first
+        tail = orfs.find_all { | orf | func1.call(orf[1]) }.map { | orf | orf[1..-1] } 
+        if func1.call(head[0])
+          [head] + tail
+        else
+          tail
+        end
       end
 
       def split codons, func
@@ -77,7 +86,7 @@ module Bio
         codons.each do | c |
           if func.call(c)
             node.push c
-            list.push node
+            list.push node if node.size >= @min_size
             node = []
           end
           node.push c
