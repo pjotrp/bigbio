@@ -34,8 +34,8 @@ module Bio
       def fetch
         if hasorf?
           orf = @seq[@start..@stop+2]
-          @seq = @seq[@stop..-1]
-          @start = 0
+          @seq = @seq[@stop..-1]  # Retain last codon!
+          @start = nil
           @stop = nil
           @pos = 0
           @c_pos = 0
