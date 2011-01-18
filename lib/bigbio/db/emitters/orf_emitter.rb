@@ -50,7 +50,10 @@ module Bio
         @stop  = nil 
       end
 
-      def add seq
+      def append seq
+        if hasorf?
+          raise "You need to fetch ORFs before appending!"
+        end
         @pos = @seq.size 
         @c_pos = @pos - @pos % 3 # round to nearest CODON
         @seq += seq.upcase
@@ -112,7 +115,8 @@ module Bio
       attr_reader :seq, :pos, :c_pos, :type, :start, :stop
 
       # Very similar to FrameState, but prepend sequences, rather that
-      # adding at the end.
+      # adding at the end. A seperate algorithm is needed to keep 
+      # speed up. In this edition we look for the STOP signal first.
       #
       # Keeps track of a frame by adding partial sequences and scanning for
       # ORFs. The sequence should be in (right-side) frame to keep reasoning
@@ -123,10 +127,13 @@ module Bio
         @pos = seq.size
         @c_pos = @pos + @seq.size % 3 # round to nearest CODON
         @start = nil  # keep track of first find
-        @stop  = nil 
+        @stop  = nil  # keep track of last find
       end
 
       def prepend seq
+        if hasorf?
+          raise "You need to fetch ORFs before prepending!"
+        end
         @pos = seq.size
         @c_pos = @pos + @seq.size % 3 # round to nearest CODON
         @seq = seq.upcase + @seq

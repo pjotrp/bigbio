@@ -35,28 +35,28 @@ describe Bio::Big::FrameState, "when using the FrameState" do
   it "should grow with sequences in frame 1 and return codons" do
     fr = FrameState.new
     fr.seq.should == ''
-    fr.add "agtcatc"
+    fr.append "agtcatc"
     fr.pos.should == 0
     fr.added_codons.should == ['AGT','CAT']
-    fr.add "agtcat"
+    fr.append "agtcat"
     fr.pos.should == 7
     fr.added_codons.should == ['CAG','TCA']
-    fr.add "agtt"
+    fr.append "agtt"
     fr.pos.should == 13
     fr.added_codons.should == ['TAG']
-    fr.add "agt"
+    fr.append "agt"
     fr.added_codons.should == ['TTA']
   end
 
   it "should grow with sequences in frame 3 and return codons" do
     fr = FrameState.new
-    fr.add "tcatc"
+    fr.append "tcatc"
     fr.pos.should == 0
     fr.added_codons.should == ['TCA']
-    fr.add "agtcat"
+    fr.append "agtcat"
     fr.pos.should == 5
     fr.added_codons.should == ['TCA','GTC']
-    fr.add "agt"
+    fr.append "agt"
     fr.added_codons.should == ['ATA']
   end
 
@@ -79,6 +79,17 @@ describe Bio::Big::FrameState, "when using the FrameState" do
   end
   it "should find two ORFs in" do
     fr = FrameState.new "atgttttaaatgtaatgttgttaa", :startstop
+    fr.hasorf?.should == true
+    fr.fetch.should == "ATGTTTTAA"
+    fr.fetch.should == "ATGTAA"
+    fr.fetch.should == nil
+  end
+  it "should find four ORFs in" do
+    fr = FrameState.new "atgttttaaatgtaatgttgttaa", :startstop
+    fr.hasorf?.should == true
+    fr.fetch.should == "ATGTTTTAA"
+    fr.fetch.should == "ATGTAA"
+    fr.append "atgttttaaatgtaatgttgttaa"
     fr.hasorf?.should == true
     fr.fetch.should == "ATGTTTTAA"
     fr.fetch.should == "ATGTAA"
@@ -132,6 +143,21 @@ describe Bio::Big::ReversedFrameState, "when using the ReversedFrameState" do
   end
   it "should find two ORFs in" do
     fr = ReversedFrameState.new "atgttttaaatgtaatgttgttaa", :startstop
+    fr.hasorf?.should == true
+    fr.fetch.should == "ATGTAATGTTGTTAA"
+    fr.fetch.should == "ATGTTTTAA"
+    fr.fetch.should == nil
+  end
+  it "should find four ORFs in" do
+    fr = ReversedFrameState.new "atgttttaaatgtaatgttgttaa", :startstop
+    fr.hasorf?.should == true
+    fr.fetch.should == "ATGTAATGTTGTTAA"
+    fr.fetch.should == "ATGTTTTAA"
+    fr.hasorf?.should == false
+    p fr
+    fr.prepend "atgttttaaatgtaatgttgttaa"
+    p fr
+    p fr.added_codons
     fr.hasorf?.should == true
     fr.fetch.should == "ATGTAATGTTGTTAA"
     fr.fetch.should == "ATGTTTTAA"
