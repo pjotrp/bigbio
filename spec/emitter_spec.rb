@@ -35,6 +35,7 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
   it "should find an ORF" do
     fr = ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa"
     fr.get_stopstop_orfs.should == ["ATGTAA", "TGGATTTAA"]
+    fr.get_startstop_orfs.should == ["ATGTAA", "TGGATTTAA"]
   end
 
 end
