@@ -31,6 +31,74 @@ module Bio
       end
     end
 
+    # The short frame uses a simpler concept. The sequence is immutable,
+    # always forward and in frame 0. That makes it easy to reason. It 
+    # also return all ORF's in one go, with the left/right locations.
+    class ShortFrameState
+      def initialize seq, min_size = 30
+        @seq = seq.upcase  
+        @min_size = min_size
+        @codons = @seq.scan(/(\w\w\w)/).flatten
+      end
+
+      def get_stopstop_orfs 
+        list = get_codon_orfs1(Proc.new { | codon | STOP_CODONS.include?(codon) })
+        list.map { |codons| 
+          codons[1..-1].join
+        }
+      end
+
+      def get_codon_orfs1 func
+        orf = split(@codons,func)
+        # Drop the first one, if there is no match on the first position
+        if !func.call(orf.first[0])
+          orf.shift
+        end
+        orf
+      end
+
+      def split codons, func
+        list = []
+        node = []
+        codons.each do | c |
+          if func.call(c)
+            node.push c
+            list.push node
+            node = []
+          end
+          node.push c
+        end
+        list
+      end
+
+      def found? func1, func2
+        codons = added_codons
+        codon1 = 0
+        if @start == nil
+          # look for first STOP codon
+          codons.each_with_index { | codon, idx | 
+            if func1.call(codon)
+              codon1 = idx
+              @start = idx * 3 + @c_pos
+              break
+            end
+          }
+        end
+        if @start != nil and @stop == nil
+          # look for 2nd STOP codon
+          codons[codon1+1..-1].each_with_index { | codon, idx |
+            if func2.call(codon)
+              # p [idx,codon]
+              @stop = (codon1 + 1 + idx)*3 + @c_pos 
+              break
+            end
+          }
+        end
+        return (@start!=nil and @stop!=nil)
+      end
+
+    end
+
     class FrameState
 
       include FrameStateHelpers
@@ -143,16 +211,18 @@ module Bio
       def fetch
         if hasorf?
           len = @seq.size
-          p1 = len - @start - 3
-          p2 = len - @stop - 1
-          # p [len, p1, p2]
+          p1 = len - @start - 3  # start counts from right
+          p2 = len - @stop - 1   # stop counts from right
+          # ---------------p1-----------p2--------cpos--- (len)
+          #               orf----------orf
+          # seq--------------seq
+          # --------------pos/c_pos
           orf = @seq[p1..p2]
-          # @seq = @seq[len-@stop..-1]  # Retain last codon!
           @seq = @seq[0..p1+2]
+          @pos = p1
+          @c_pos = @pos + @seq.size % 3 # round to nearest CODON
           @start = nil
           @stop = nil
-          # @pos = 0
-          # @c_pos = 0
           orf
         else
           nil
