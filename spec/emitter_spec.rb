@@ -93,37 +93,40 @@ describe Bio::Big::ReversedFrameState, "when using the ReversedFrameState" do
   it "should grow with sequences in frame 1 and return codons" do
     fr = ReversedFrameState.new
     fr.seq.should == ''
-    # Final seq: 3' agt agtcat agtcatc 5'
-    fr.prepend "agt"
+    fr.prepend "tga"
     # 5' tga 3'
     fr.pos.should == 3
     fr.added_codons.should == ['TGA']
-    fr.prepend "agtcat"
+    fr.prepend "tactga"
     # 5' tactga tga 3'
     fr.pos.should == 6
-    fr.added_codons.should == ['TGA','TAC' ]
-    fr.prepend "agtcatc"
-    fr.pos.should == 9
-    fr.added_codons.should == ['TGA', 'TAC', 'CTA']
-    fr.prepend "agtc"
-    fr.added_codons.should == ['ACT']
+    fr.added_codons.should == ['TGA','TAC']
+    fr.prepend "ctactga"
+    # 5' c|tactga tactga tga 3'
+    fr.pos.should == 7
+    fr.c_pos.should == 7
+    fr.added_codons.should == ['TGA','TAC']
+    fr.prepend "tcagtc"
+    # 5' tcagtc c|tactga tactga tga 3'
+    fr.pos.should == 6
+    fr.c_pos.should == 7
+    fr.added_codons.should == ['TCC','CAG']
   end
 
   it "should find an ORF in" do
     fr = FrameState.new "atgatg"
     fr.stopstop?.should == false
-    # tagtttaaatag
-    fr = FrameState.new "gataaatttgat"
+    # 5' tagtttaaatag 3'
+    fr = FrameState.new "gataaatttgat".reverse
     fr.stopstop?.should == true
     fr.fetch.should == "TAGTTTAAATAG"
     fr.fetch.should == nil
   end
-  if false
   it "should find two ORFs in" do
     fr = FrameState.new "atggattaaatgtaatgttgttaa"
     fr.hasorf?.should == true
-    fr.fetch.should == "ATGTAA"
-    fr.fetch.should == "TGTTGTTAA"
+    fr.fetch.should == "TAAATGTAA"
+    fr.fetch.should == "TAATGTTGTTAA"
     fr.fetch.should == nil
   end
   it "should find two ORFs in" do
@@ -132,7 +135,6 @@ describe Bio::Big::ReversedFrameState, "when using the ReversedFrameState" do
     fr.fetch.should == "ATGTTTTAA"
     fr.fetch.should == "ATGTAA"
     fr.fetch.should == nil
-  end
   end
 end
 

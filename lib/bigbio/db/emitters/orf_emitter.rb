@@ -29,8 +29,6 @@ module Bio
         found?(Proc.new { | codon | START_CODONS.include?(codon) }, 
                Proc.new { | codon | STOP_CODONS.include?(codon) })
       end
-
-
     end
 
     class FrameState
@@ -111,8 +109,7 @@ module Bio
     class ReversedFrameState
       include FrameStateHelpers
 
-      attr_reader :seq, :pos, :type, :start, :stop
-
+      attr_reader :seq, :pos, :c_pos, :type, :start, :stop
 
       # Very similar to FrameState, but prepend sequences, rather that
       # adding at the end.
@@ -122,7 +119,7 @@ module Bio
       # easy. If a find is made, the sequence should be reset. frame (0..2)
       def initialize seq = '', type=:stopstop 
         @type = type
-        @seq = seq.upcase.reverse
+        @seq = seq.upcase
         @pos = 0
         @c_pos = 0
         @start = nil  # keep track of first find
@@ -130,11 +127,10 @@ module Bio
       end
 
       def prepend seq
-        @pos = seq.size 
-        @c_pos = @pos - @pos % 3 # round to nearest CODON
-        @seq = seq.upcase.reverse + @seq
+        @pos = seq.size
+        @c_pos = @pos + @seq.size % 3 # round to nearest CODON
+        @seq = seq.upcase + @seq
       end
-
       # Fetch the ORF and reset state to start at new part of sequence
       def fetch
         if hasorf?
@@ -178,8 +174,8 @@ module Bio
 
       # Return a list of codons to check
       def added_codons 
-        seq1 = @seq[@c_pos..-1]
-        seq2 = seq1.scan(/(\w\w\w)/).flatten
+        seq1 = @seq[@c_pos%3..@c_pos]
+        seq2 = seq1.scan(/(\w\w\w)/).flatten.reverse
         seq2
       end
 
