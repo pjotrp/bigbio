@@ -50,20 +50,25 @@ module Bio
       # True if found, otherwise false
       def hasorf?
         case @type
-          when :stopstop
-            return stopstop?
+          when :stopstop then stopstop?
+          when :startstop then startstop?
           else
             raise "Unknown type to act on #{@type}"
         end
-        false
       end
 
       def stopstop?
-        found?({ | codon | STOP_CODONS.include?(codon) }, 
-               { | codon | STOP_CODONS.include?(codon) })
+        found?(Proc.new { | codon | STOP_CODONS.include?(codon) }, 
+               Proc.new { | codon | STOP_CODONS.include?(codon) })
       end
 
-      def found? &func1, &func2
+      def startstop?
+        found?(Proc.new { | codon | START_CODONS.include?(codon) }, 
+               Proc.new { | codon | STOP_CODONS.include?(codon) })
+      end
+
+
+      def found? func1, func2
         codons = added_codons
         codon1 = 0
         if @start == nil
