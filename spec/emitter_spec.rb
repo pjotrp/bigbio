@@ -109,29 +109,16 @@ describe Bio::Big::ReversedFrameState, "when using the ReversedFrameState" do
     fr.added_codons.should == ['ACT']
   end
 
-  if false
-  it "should grow with sequences in frame 3 and return codons" do
-    fr = FrameState.new
-    fr.add "tcatc"
-    fr.pos.should == 0
-    fr.added_codons.should == ['TCA']
-    fr.add "agtcat"
-    fr.pos.should == 5
-    fr.added_codons.should == ['TCA','GTC']
-    fr.add "agt"
-    fr.added_codons.should == ['ATA']
-  end
-
   it "should find an ORF in" do
-    fr = FrameState.new "atg"
+    fr = FrameState.new "atgatg"
     fr.stopstop?.should == false
-    fr = FrameState.new "atggattaaatgtaa"
+    # tagtttaaatag
+    fr = FrameState.new "gataaatttgat"
     fr.stopstop?.should == true
-    fr.start.should == 6
-    fr.stop.should == 6+6
-    fr.fetch.should == "TAAATGTAA"
+    fr.fetch.should == "TAGTTTAAATAG"
     fr.fetch.should == nil
   end
+  if false
   it "should find two ORFs in" do
     fr = FrameState.new "atggattaaatgtaatgttgttaa"
     fr.hasorf?.should == true
