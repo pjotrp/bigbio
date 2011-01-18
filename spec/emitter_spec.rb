@@ -151,6 +151,8 @@ describe Bio::Big::ReversedFrameState, "when using the ReversedFrameState" do
   it "should find four ORFs in" do
     fr = ReversedFrameState.new "atgttttaaatgtaatgttgttaa", :startstop
     fr.hasorf?.should == true
+    p fr
+    p fr.added_codons
     fr.fetch.should == "ATGTAATGTTGTTAA"
     fr.fetch.should == "ATGTTTTAA"
     fr.hasorf?.should == false
