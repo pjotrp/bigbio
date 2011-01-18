@@ -75,6 +75,13 @@ describe Bio::Big::FrameState, "when using the FrameState" do
     fr.fetch.should == "TAATGTTGTTAA"
     fr.fetch.should == nil
   end
+  it "should find two ORFs in" do
+    fr = FrameState.new "atgttttaaatgtaatgttgttaa", :startstop
+    fr.hasorf?.should == true
+    fr.fetch.should == "ATGTTTTAA"
+    fr.fetch.should == "ATGTAA"
+    fr.fetch.should == nil
+  end
 end
 
 describe Bio::Big::OrfEmitter, "when using the ORF emitter" do
