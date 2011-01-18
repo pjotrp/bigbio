@@ -120,8 +120,8 @@ module Bio
       def initialize seq = '', type=:stopstop 
         @type = type
         @seq = seq.upcase
-        @pos = 0
-        @c_pos = 0
+        @pos = seq.size
+        @c_pos = @pos + @seq.size % 3 # round to nearest CODON
         @start = nil  # keep track of first find
         @stop  = nil 
       end
@@ -131,15 +131,21 @@ module Bio
         @c_pos = @pos + @seq.size % 3 # round to nearest CODON
         @seq = seq.upcase + @seq
       end
+
       # Fetch the ORF and reset state to start at new part of sequence
       def fetch
         if hasorf?
-          orf = @seq[@start..@stop+2]
-          @seq = @seq[@stop..-1]  # Retain last codon!
+          len = @seq.size
+          p1 = len - @start - 3
+          p2 = len - @stop - 1
+          # p [len, p1, p2]
+          orf = @seq[p1..p2]
+          # @seq = @seq[len-@stop..-1]  # Retain last codon!
+          @seq = @seq[0..p1+2]
           @start = nil
           @stop = nil
-          @pos = 0
-          @c_pos = 0
+          # @pos = 0
+          # @c_pos = 0
           orf
         else
           nil
@@ -149,22 +155,22 @@ module Bio
       def found? func1, func2
         codons = added_codons
         codon1 = 0
-        if @start == nil
-          # look for first/start codon
+        if @stop == nil
+          # look for right/stop codon
           codons.each_with_index { | codon, idx | 
-            if func1.call(codon)
+            if func2.call(codon)
               codon1 = idx
-              @start = idx * 3 + @c_pos
+              @stop = idx * 3  # from the end!
               break
             end
           }
         end
-        if @start != nil and @stop == nil
-          # look for 2nd/stop codon
+        if @stop != nil and @start == nil
+          # look for left/start codon
           codons[codon1+1..-1].each_with_index { | codon, idx |
-            if func2.call(codon)
+            if func1.call(codon)
               # p [idx,codon]
-              @stop = (codon1 + 1 + idx)*3 + @c_pos 
+              @start = (codon1+1 + idx)*3 
               break
             end
           }

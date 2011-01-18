@@ -117,23 +117,24 @@ describe Bio::Big::ReversedFrameState, "when using the ReversedFrameState" do
     fr = ReversedFrameState.new "atgatg"
     fr.stopstop?.should == false
     # 5' tagtttaaatag 3'
-    fr = ReversedFrameState.new "gataaatttgat".reverse
+    fr = ReversedFrameState.new "atggattaaatgtaa"
+    fr.added_codons[0].should == "TAA"
     fr.stopstop?.should == true
-    fr.fetch.should == "TAGTTTAAATAG"
+    fr.fetch.should == "TAAATGTAA"
     fr.fetch.should == nil
   end
   it "should find two ORFs in" do
     fr = ReversedFrameState.new "atggattaaatgtaatgttgttaa"
     fr.hasorf?.should == true
-    fr.fetch.should == "TAAATGTAA"
     fr.fetch.should == "TAATGTTGTTAA"
+    fr.fetch.should == "TAAATGTAA"
     fr.fetch.should == nil
   end
   it "should find two ORFs in" do
     fr = ReversedFrameState.new "atgttttaaatgtaatgttgttaa", :startstop
     fr.hasorf?.should == true
+    fr.fetch.should == "ATGTAATGTTGTTAA"
     fr.fetch.should == "ATGTTTTAA"
-    fr.fetch.should == "ATGTAA"
     fr.fetch.should == nil
   end
 end
