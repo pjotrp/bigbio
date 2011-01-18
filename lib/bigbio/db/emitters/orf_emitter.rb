@@ -48,12 +48,26 @@ module Bio
         }
       end
 
-      def get_codon_orfs1 func
+      def get_startstop_orfs 
+        list = get_codon_orfs2(
+                 Proc.new { | codon | START_CODONS.include?(codon) },
+                 Proc.new { | codon | STOP_CODONS.include?(codon) })
+        list.map { |codons| 
+          codons[1..-1].join
+        }
+      end
+
+      def get_codon_orfs1 func, checkfirst=true
         orf = split(@codons,func)
         # Drop the first one, if there is no match on the first position
-        if !func.call(orf.first[0])
+        if checkfirst and !func.call(orf.first[0])
           orf.shift
         end
+        orf
+      end
+
+      def get_codon_orfs2 func1, func2
+        orf = get_codon_orfts1(func1,false)
         orf
       end
 
