@@ -41,11 +41,75 @@ describe Bio::Big::FrameState, "when using the FrameState" do
     fr.add "agtcat"
     fr.pos.should == 7
     fr.added_codons.should == ['CAG','TCA']
-    fr.add "agt"
+    fr.add "agtt"
     fr.pos.should == 13
     fr.added_codons.should == ['TAG']
+    fr.add "agt"
+    fr.added_codons.should == ['TTA']
   end
 
+  it "should grow with sequences in frame 3 and return codons" do
+    fr = FrameState.new
+    fr.add "tcatc"
+    fr.pos.should == 0
+    fr.added_codons.should == ['TCA']
+    fr.add "agtcat"
+    fr.pos.should == 5
+    fr.added_codons.should == ['TCA','GTC']
+    fr.add "agt"
+    fr.added_codons.should == ['ATA']
+  end
+
+  it "should find an ORF in" do
+    fr = FrameState.new "atg"
+    fr.stopstop?.should == false
+    fr = FrameState.new "atggattaaatgtaa"
+    fr.stopstop?.should == true
+    fr.start.should == 6
+    fr.stop.should == 6+6
+    fr.fetch.should == "TAAATGTAA"
+    fr.fetch.should == nil
+  end
+  it "should find two STOP_STOP ORFs in" do
+    fr = FrameState.new "atggattaaatgtaatgttgttaa"
+    fr.hasorf?.should == true
+    fr.fetch.should == "TAAATGTAA"
+    fr.fetch.should == "TAATGTTGTTAA"
+    fr.fetch.should == nil
+  end
+  it "should find two ORFs in" do
+    fr = FrameState.new "atgttttaaatgtaatgttgttaa", :startstop
+    fr.hasorf?.should == true
+    fr.fetch.should == "ATGTTTTAA"
+    fr.fetch.should == "ATGTAA"
+    fr.fetch.should == nil
+  end
+end
+
+describe Bio::Big::ReversedFrameState, "when using the ReversedFrameState" do
+
+  include Bio::Big
+
+  it "should grow with sequences in frame 1 and return codons" do
+    fr = ReversedFrameState.new
+    fr.seq.should == ''
+    # Final seq: 3' agt agtcat agtcatc 5'
+    fr.prepend "agt"
+    # 5' tga 3'
+    fr.pos.should == 3
+    fr.added_codons.should == ['TGA']
+    fr.prepend "agtcat"
+    # 5' tactga tga 3'
+    fr.pos.should == 6
+    fr.added_codons.should == ['TGA','TAC' ]
+    fr.prepend "agtcatc"
+    fr.pos.should == 9
+    fr.added_codons.should == ['TGA', 'TAC', 'CTA']
+    fr.prepend "agtc"
+    fr.added_codons.should == ['ACT']
+  end
+
+  if false
   it "should grow with sequences in frame 3 and return codons" do
     fr = FrameState.new
     fr.add "tcatc"
@@ -71,8 +135,8 @@ describe Bio::Big::FrameState, "when using the FrameState" do
   it "should find two ORFs in" do
     fr = FrameState.new "atggattaaatgtaatgttgttaa"
     fr.hasorf?.should == true
-    fr.fetch.should == "TAAATGTAA"
-    fr.fetch.should == "TAATGTTGTTAA"
+    fr.fetch.should == "ATGTAA"
+    fr.fetch.should == "TGTTGTTAA"
     fr.fetch.should == nil
   end
   it "should find two ORFs in" do
@@ -81,6 +145,7 @@ describe Bio::Big::FrameState, "when using the FrameState" do
     fr.fetch.should == "ATGTTTTAA"
     fr.fetch.should == "ATGTAA"
     fr.fetch.should == nil
+  end
   end
 end
 
