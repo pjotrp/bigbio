@@ -27,6 +27,8 @@ end
 
 require 'bio'
 require 'bigbio/adapters/translate'
+require 'bigbio/db/emitters/fasta_emitter'
+require 'bigbio/db/emitters/orf_emitter'
 
 autoload :FastaReader, 'bigbio/db/fasta'
 autoload :FastaWriter, 'bigbio/db/fasta'
