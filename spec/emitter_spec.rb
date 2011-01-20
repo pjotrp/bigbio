@@ -50,6 +50,9 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
   end
   it "should find ORFs in" do
     fr = ShortFrameState.new "atgttttaaatgtaatgttgttaaatgttttaaatgtaatgttgttaa",0
+    orfs = fr.get_stopstop_orfs
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGTTTTAA", "ATGTAA", "ATGTTTTAA", "ATGTAA"]
+    orfs.map{ | orf | orf.pos }.should == [ 0, 3, 8, 11]
     orfs = fr.get_startstop_orfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGTTTTAA", "ATGTAA", "ATGTTTTAA", "ATGTAA"]
     orfs.map{ | orf | orf.pos }.should == [ 0, 3, 8, 11]
