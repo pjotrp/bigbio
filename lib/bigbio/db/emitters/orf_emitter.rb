@@ -41,11 +41,8 @@ module Bio
             orfs.shift
         end
         orfs.map { |codons| 
-          if do_strip_leading and splitter_func.call(codons[0])
-            codons[1..-1]
-          else
-            codons
-          end
+          codons.shift if do_strip_leading and splitter_func.call(codons[0])
+          codons
         }
       end
 
