@@ -53,7 +53,7 @@ module Bio
 
       def initialize seq, min_size = 30
         # @seq = seq.upcase  
-        @min_size_codons = (min_size/3).to_i+1
+        @min_size_codons = (min_size/3).to_i
         @codons = FrameCodonSequence.new(seq)
       end
 
@@ -100,8 +100,7 @@ module Bio
           if is_splitter_func.call(c)
             node.push c
             size = node.size
-            # p [pos,size,node] if size >= @min_size
-            list.push FrameCodonSequence.new(node,pos+1-size) if size >= @min_size_codons
+            list.push FrameCodonSequence.new(node,pos+1-size) if size > @min_size_codons
             node = []
           end
           node.push c
@@ -131,6 +130,8 @@ module Bio
       # contained ORFs for every resulting frame (-3..-1, 1..3 )
       def emit_seq
         @em.emit_seq do | part, index, tag, seq |
+          p [part, seq]
+          break
         end
       end
     end

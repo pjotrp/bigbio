@@ -51,11 +51,59 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
   it "should find ORFs in" do
     fr = ShortFrameState.new "atgttttaaatgtaatgttgttaaatgttttaaatgtaatgttgttaa",0
     orfs = fr.get_stopstop_orfs
-    orfs.map{ | orf | orf.to_seq }.should == ["ATGTTTTAA", "ATGTAA", "ATGTTTTAA", "ATGTAA"]
-    orfs.map{ | orf | orf.pos }.should == [ 0, 3, 8, 11]
+    orfs.map{ | orf | orf.to_seq }.should ==  ["ATGTAA", "TGTTGTTAA", "ATGTTTTAA", "ATGTAA", "TGTTGTTAA"]
+    orfs.map{ | orf | orf.pos }.should == [3, 5, 8, 11, 13]
     orfs = fr.get_startstop_orfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGTTTTAA", "ATGTAA", "ATGTTTTAA", "ATGTAA"]
     orfs.map{ | orf | orf.pos }.should == [ 0, 3, 8, 11]
+  end
+
+  it "should match results of EMBOSS getorf" do
+    s = "AG GTTCGNACGGTCATCGNATNAAGTCTTGNATATCG TAA TTNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTG GGG AAAACTTTG TGA GCAAAGAGCGAGAAAATGAGCGGANCGG TAA GAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGC TAA GGTCCTTGTCACAGATGAGGCTCGTAGAG".gsub(/ /,'')
+    # >_3 [3 - 167] #0
+    # 1st  GTTCGNACGGTCATCGNATNAAGTCTTGNATATCGTAATTNCGCGTGCCGCCTTCTTTCT
+    # CCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCA
+    # GTGTGTGTATTTTGGGGAAAACTTTGTGAGCAAAGAGCGAGAAAA
+    # >_4 [171 - 179] #0
+    # OK   GCGGANCGG
+    # >_5 [183 - 239] #0
+    # OK   GAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGC
+    # >_6 [243 - 257] #0
+    # OK-  GGTCCTTGTCACAGA
+    # >_7 [261 - 266] #0
+    # OK-  GGCTCGTAG
+    # >_8 [1 - 270] # 1
+    # whole!  AGGTTCGNACGGTCATCGNATNAAGTCTTGNATATCGTAATTNCGCGTGCCGCCTTCTTT
+    # CTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGT
+    # CAGTGTGTGTATTTTGGGGAAAACTTTGTGAGCAAAGAGCGAGAAAATGAGCGGANCGGT
+    # AAGAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGCT
+    # AAGGTCCTTGTCACAGATGAGGCTCGTAGA
+    # >_1 [2 - 37] #2
+    # 1st-   GGTTCGNACGGTCATCGNATNAAGTCTTGNATATCG
+    # >_2 [41 - 148] #2
+    # OK-   TTNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCT
+    # TCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTG
+    # >_9 [152 - 271] #2
+    # last- CAAAGAGCGAGAAAATGAGCGGANCGGTAAGAAAATCGCGGATGTGGCTTTCAAAGCTT
+    # CAAGGACTATCGATTGGGATGGTATGGCTAAGGTCCTTGTCACAGATGAGGCTCGTAGAG
+
+    # Frame 0
+    minsize = 0
+    fr = ShortFrameState.new s,minsize
+    orfs = fr.get_stopstop_orfs
+    orfs.map{ | orf | orf.to_seq }.should == []
+
+    # Frame 1
+    fr = ShortFrameState.new s[1..-1],minsize
+    os = fr.get_stopstop_orfs
+    os.map{ | orf | orf.to_seq }.should == ["TTNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA"]
+    orfs += os
+    # Frame 2
+    fr = ShortFrameState.new s[2..-1],minsize
+    os = fr.get_stopstop_orfs
+    os.map{ | orf | orf.to_seq }.should == ["GCGGANCGGTAA", "GAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGCTAA", "GGTCCTTGTCACAGATGA", "GGCTCGTAG"]
+    orfs += os
+    orfs.size.should == 5
   end
 end
 
