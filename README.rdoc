@@ -9,8 +9,8 @@ of a BioRuby plugin.
 Unlike BioRuby which aims to be pure Ruby, BigBio may use BioLib C/C++
 functions for increased performance and reduced memory consumption.
 
-If you wish to contribute subscribe to the BioRuby and BioLib mailing
-lists.
+This is an experimental project. If you wish to contribute subscribe
+to the BioRuby and/or BioLib mailing lists.
 
 == Copyright
 

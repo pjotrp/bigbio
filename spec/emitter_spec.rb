@@ -46,11 +46,11 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
 
 end
 
+if false
 describe Bio::Big::FrameState, "when using the FrameState" do
 
   include Bio::Big
 
-  if false
   it "should grow with sequences in frame 1 and return codons" do
     fr = FrameState.new
     fr.seq.should == ''
@@ -113,7 +113,6 @@ describe Bio::Big::FrameState, "when using the FrameState" do
     fr.fetch.should == "ATGTTTTAA"
     fr.fetch.should == "ATGTAA"
     fr.fetch.should == nil
-  end
   end
 end
 
@@ -204,5 +203,6 @@ describe Bio::Big::OrfEmitter, "when using the ORF emitter" do
   it "should emit ORFs on any filter"
   it "should emit ORFs using a minimum size"
   it "should emit ORFs with adjoining sequences"
+  end
   end
 end
