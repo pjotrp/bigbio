@@ -20,47 +20,39 @@ module Bio
 
       # Return a list of ORFs delimited by STOP codons. 
       def get_stopstop_orfs 
-        get_codon_orfs1(Proc.new { | codon | STOP_CODONS.include?(codon) })
+        get_codon_orfs1(Proc.new { | codon | STOP_CODONS.include?(codon) },false,true).map { | codons | codons.join }
       end
 
       # Return a list of ORFs delimited by START-STOP codons
       def get_startstop_orfs 
         get_codon_orfs2(
-                 Proc.new { | codon | START_CODONS.include?(codon) },
-                 Proc.new { | codon | STOP_CODONS.include?(codon) })
+                 Proc.new { | codon | STOP_CODONS.include?(codon) },
+                 Proc.new { | codon | START_CODONS.include?(codon) }).map { |codons | codons.join }
       end
 
       # Splitter for one delimiter function. +include_leftmost+ decides
       # the first sequence is returned when incomplete. +strip_leading+
       # is used to remove the shared codon with the last sequence.
       #
-      def get_codon_orfs1 is_splitter_func, include_leftmost=false, strip_leading = true
-        orfs = split(@codons,is_splitter_func)
+      def get_codon_orfs1 splitter_func,do_include_leftmost,do_strip_leading 
+        orfs = split(@codons,splitter_func)
         # Drop the first sequence, if there is no match on the first position
-        if !include_leftmost and orfs.size>1 and !is_splitter_func.call(orfs.first[0])
+        if !do_include_leftmost and orfs.size>1 and !splitter_func.call(orfs.first[0])
             orfs.shift
         end
         orfs.map { |codons| 
-          if strip_leading
-            codons[1..-1].join
+          if do_strip_leading and splitter_func.call(codons[0])
+            codons[1..-1]
           else
-            codons.join
+            codons
           end
         }
       end
 
       # Splitter for two delimeter functions
-      def get_codon_orfs2 is_splitter_func, is_start_func
-        orfs = get_codon_orfs1(is_start_func,true)
-        # Check the first one for a start codon
-        head = orfs.first
-        # Find all start codons and remove leading stop codon
-        tail = orfs.find_all { | orf | is_splitter_func.call(orf[1]) }.map { | orf | orf[1..-1] } 
-        if is_splitter_func.call(head[0])
-          [head] + tail
-        else
-          tail
-        end
+      def get_codon_orfs2 splitter_func, start_func
+        orfs = get_codon_orfs1(splitter_func,true,true)
+        orfs.find_all { | orf | start_func.call(orf[0]) }
       end
 
       def split codons, func
