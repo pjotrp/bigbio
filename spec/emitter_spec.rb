@@ -104,6 +104,31 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
     os.map{ | orf | orf.to_seq }.should == ["GCGGANCGGTAA", "GAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGCTAA", "GGTCCTTGTCACAGATGA", "GGCTCGTAG"]
     orfs += os
     orfs.size.should == 5
+
+    # >_1 [235 - 270] 
+    # ATGGCTAAGGTCCTTGTCACAGATGAGGCTCGTAGA
+    # >_2 [167 - 271] 
+    # ATGAGCGGANCGGTAAGAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATT
+    # GGGATGGTATGGCTAAGGTCCTTGTCACAGATGAGGCTCGTAGAG
+
+    # Frame 0
+    minsize = 0
+    fr = ShortFrameState.new s,minsize
+    orfs = fr.get_startstop_orfs
+    orfs.map{ | orf | orf.to_seq }.should == []
+
+    # Frame 1
+    fr = ShortFrameState.new s[1..-1],minsize
+    os = fr.get_startstop_orfs
+    orfs += os
+    # Frame 2
+    fr = ShortFrameState.new s[2..-1],minsize
+    os = fr.get_startstop_orfs
+    orfs += os
+    orfs.map{ | orf | orf.to_seq }.should == []
+    orfs.size.should == 2
+
+9
   end
 end
 
