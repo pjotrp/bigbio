@@ -57,6 +57,7 @@ module Bio
       #
       def get_codon_orfs1 splitter_func,do_include_leftmost,do_strip_leading 
         orfs = split(@codons,splitter_func)
+        p orfs
         # Drop the first sequence, if there is no match on the first position
         orfs.shift if !do_include_leftmost and orfs.size>1 and !splitter_func.call(orfs.first[0])
         orfs.map { |codons| 
