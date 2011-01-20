@@ -124,8 +124,33 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
     orfs += fr.get_startstop_orfs
     orfs.map{ | orf | orf.to_seq }.should == []
     orfs.size.should == 0
-
   end
+end
+
+describe Bio::Big::GetFrame, "when combining frames" do
+  include Bio::Big
+  it "should combine a forward frame" do
+    seq_pos = 0
+    s1 = "atggattaaatgta"
+    s2 = "atggatttaatgtaaa"
+    fr = ShortFrameState.new s1,0
+    orfs = fr.get_stopstop_orfs
+    orfs.last.rpos.should == 3
+    remove = orfs.last.rpos*3
+    remove.should == 9
+    seq_pos += remove
+    s3 = s1[remove..-1] + s2
+    s3.should == "atgtaatggatttaatgtaaa"
+    fr3 = ShortFrameState.new s3,0
+    norfs = fr3.get_stopstop_orfs
+    norfs.each { | orf | orf.abs_pos = seq_pos + orf.pos }
+    orfs += norfs
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
+    orfs.map{ | orf | orf.abs_pos }.should == [nil,11]
+    
+  end
+
+  it "should combine a reverse frame"
 end
 
 describe Bio::Big::OrfEmitter, "when using the ORF emitter" do

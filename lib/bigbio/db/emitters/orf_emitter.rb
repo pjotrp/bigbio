@@ -11,8 +11,9 @@ module Bio
 
       class FrameCodonSequence 
         include Enumerable
-        attr_reader :pos  # codon position in parent sequence
+        attr_reader :pos     # codon position in short parent sequence
         attr_reader :codons
+        attr_accessor :abs_pos # this I need to think about.
         def initialize seq, pos=0
           if seq.kind_of?(String)
             @codons = seq.upcase.scan(/(\w\w\w)/).flatten
@@ -110,6 +111,10 @@ module Bio
 
     end
 
+    module GetFrame
+
+    end
+
     class OrfEmitter
 
       # 6-frame ORF emitter for (growing) sequences from the +emit+ 
@@ -130,7 +135,7 @@ module Bio
       # contained ORFs for every resulting frame (-3..-1, 1..3 )
       def emit_seq
         @em.emit_seq do | part, index, tag, seq |
-          p [part, seq]
+          # p [part, seq]
           break
         end
       end
