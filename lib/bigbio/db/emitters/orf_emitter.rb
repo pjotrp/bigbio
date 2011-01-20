@@ -20,30 +20,33 @@ module Bio
 
       # Return a list of ORFs delimited by STOP codons. 
       def get_stopstop_orfs 
-        list = get_codon_orfs1(Proc.new { | codon | STOP_CODONS.include?(codon) })
-        list.map { |codons| 
-          codons[1..-1].join
-        }
+        get_codon_orfs1(Proc.new { | codon | STOP_CODONS.include?(codon) })
       end
 
       # Return a list of ORFs delimited by START-STOP codons
       def get_startstop_orfs 
-        list = get_codon_orfs2(
+        get_codon_orfs2(
                  Proc.new { | codon | START_CODONS.include?(codon) },
                  Proc.new { | codon | STOP_CODONS.include?(codon) })
-        list.map { |codons| 
-          codons.join
-        }
       end
 
-      # Splitter for one delimiter function. 
-      def get_codon_orfs1 is_splitter_func, include_leftmost=false
+      # Splitter for one delimiter function. +include_leftmost+ decides
+      # the first sequence is returned when incomplete. +strip_leading+
+      # is used to remove the shared codon with the last sequence.
+      #
+      def get_codon_orfs1 is_splitter_func, include_leftmost=false, strip_leading = true
         orfs = split(@codons,is_splitter_func)
         # Drop the first sequence, if there is no match on the first position
         if !include_leftmost and orfs.size>1 and !is_splitter_func.call(orfs.first[0])
             orfs.shift
         end
-        orfs
+        orfs.map { |codons| 
+          if strip_leading
+            codons[1..-1].join
+          else
+            codons.join
+          end
+        }
       end
 
       # Splitter for two delimeter functions
