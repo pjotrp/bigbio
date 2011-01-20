@@ -7,9 +7,10 @@ module Bio
     STOP_CODONS = Set.new(%w{TAG TAA TGA UAG UAA UGA})
     START_CODONS = Set.new(%w{ATG AUG})
 
-    # The short frame uses a simpler concept. The sequence is immutable,
-    # always forward and in frame 0. That makes it easy to reason. It 
-    # also return all ORF's in one go, with the left/right locations.
+    # The short frame uses the simplest concept to find ORFs. The sequence is
+    # immutable, always forward and in frame 0. That makes it easy to reason.
+    # It also return all ORF's in one go, with the left/right locations.
+
     class ShortFrameState
       def initialize seq, min_size = 30
         @seq = seq.upcase  
@@ -17,6 +18,7 @@ module Bio
         @codons = @seq.scan(/(\w\w\w)/).flatten
       end
 
+      # Return a list of ORFs delimited by STOP codons. 
       def get_stopstop_orfs 
         list = get_codon_orfs1(Proc.new { | codon | STOP_CODONS.include?(codon) })
         list.map { |codons| 
@@ -24,27 +26,29 @@ module Bio
         }
       end
 
+      # Return a list of ORFs delimited by START-STOP codons
       def get_startstop_orfs 
         list = get_codon_orfs2(
                  Proc.new { | codon | START_CODONS.include?(codon) },
                  Proc.new { | codon | STOP_CODONS.include?(codon) })
-        p list
         list.map { |codons| 
           codons.join
         }
       end
 
-      def get_codon_orfs1 is_splitter_func, checkfirst=true
+      # Splitter for one delimiter function. 
+      def get_codon_orfs1 is_splitter_func, include_leftmost=false
         orfs = split(@codons,is_splitter_func)
-        # Drop the first one, if there is no match on the first position
-        if checkfirst and orfs.size>1 and !is_splitter_func.call(orfs.first[0])
-          orfs.shift
+        # Drop the first sequence, if there is no match on the first position
+        if !include_leftmost and orfs.size>1 and !is_splitter_func.call(orfs.first[0])
+            orfs.shift
         end
         orfs
       end
 
+      # Splitter for two delimeter functions
       def get_codon_orfs2 is_splitter_func, is_start_func
-        orfs = get_codon_orfs1(is_start_func,false)
+        orfs = get_codon_orfs1(is_start_func,true)
         # Check the first one for a start codon
         head = orfs.first
         # Find all start codons and remove leading stop codon
