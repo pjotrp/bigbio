@@ -48,7 +48,10 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
     orfs.map{ | orf | orf.to_seq }.should == [ "TGGATTTAA"]
     fr.get_startstop_orfs.should == []
   end
-
+  it "should find four ORFs in" do
+    fr = ShortFrameState.new "atgttttaaatgtaatgttgttaa"
+    orfs = fr.get_stopstop_orfs
+    orfs.map{ | orf | orf.to_seq }.should == [ "TGGATTTAA"]
 end
 
 if false
@@ -56,58 +59,6 @@ describe Bio::Big::FrameState, "when using the FrameState" do
 
   include Bio::Big
 
-  it "should grow with sequences in frame 1 and return codons" do
-    fr = FrameState.new
-    fr.seq.should == ''
-    fr.append "agtcatc"
-    fr.pos.should == 0
-    fr.added_codons.should == ['AGT','CAT']
-    fr.append "agtcat"
-    fr.pos.should == 7
-    fr.added_codons.should == ['CAG','TCA']
-    fr.append "agtt"
-    fr.pos.should == 13
-    fr.added_codons.should == ['TAG']
-    fr.append "agt"
-    fr.added_codons.should == ['TTA']
-  end
-
-  it "should grow with sequences in frame 3 and return codons" do
-    fr = FrameState.new
-    fr.append "tcatc"
-    fr.pos.should == 0
-    fr.added_codons.should == ['TCA']
-    fr.append "agtcat"
-    fr.pos.should == 5
-    fr.added_codons.should == ['TCA','GTC']
-    fr.append "agt"
-    fr.added_codons.should == ['ATA']
-  end
-
-  it "should find an ORF in" do
-    fr = FrameState.new "atg"
-    fr.stopstop?.should == false
-    fr = FrameState.new "atggattaaatgtaa"
-    fr.stopstop?.should == true
-    fr.start.should == 6
-    fr.stop.should == 6+6
-    fr.fetch.should == "TAAATGTAA"
-    fr.fetch.should == nil
-  end
-  it "should find two STOP_STOP ORFs in" do
-    fr = FrameState.new "atggattaaatgtaatgttgttaa"
-    fr.hasorf?.should == true
-    fr.fetch.should == "TAAATGTAA"
-    fr.fetch.should == "TAATGTTGTTAA"
-    fr.fetch.should == nil
-  end
-  it "should find two ORFs in" do
-    fr = FrameState.new "atgttttaaatgtaatgttgttaa", :startstop
-    fr.hasorf?.should == true
-    fr.fetch.should == "ATGTTTTAA"
-    fr.fetch.should == "ATGTAA"
-    fr.fetch.should == nil
-  end
   it "should find four ORFs in" do
     fr = FrameState.new "atgttttaaatgtaatgttgttaa", :startstop
     fr.hasorf?.should == true
