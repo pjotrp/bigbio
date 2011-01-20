@@ -4,51 +4,69 @@ require 'set'
 module Bio
   module Big
 
-    STOP_CODONS = Set.new(%w{TAG TAA TGA UAG UAA UGA})
-    START_CODONS = Set.new(%w{ATG AUG})
+    module FrameCodonHelpers
 
-    class FrameCodonSequence < Array
-      attr_reader :pos  # codon position in parent sequence
-      def initialize seq, pos=0
-        if seq.kind_of?(Array)
-          super seq
-        else
-          super seq.upcase.scan(/(\w\w\w)/).flatten
+      STOP_CODONS = Set.new(%w{TAG TAA TGA UAG UAA UGA})
+      START_CODONS = Set.new(%w{ATG AUG})
+
+      class FrameCodonSequence 
+        include Enumerable
+        attr_reader :pos  # codon position in parent sequence
+        attr_reader :codons
+        def initialize seq, pos=0
+          if seq.kind_of?(String)
+            @codons = seq.upcase.scan(/(\w\w\w)/).flatten
+          else
+            @codons = seq
+          end
+          @pos = pos
         end
-        @pos = pos
+        def size
+          @codons.size
+        end
+        def rpos
+          pos + size
+        end
+        def [] index
+          @codons[index]
+        end
+        def shift
+          list = @codons
+          list.shift
+          FrameCodonSequence.new(list,@pos+1)
+        end
+        def to_seq
+          @codons.join
+        end
+        def each
+          @codons.each { | c| yield c }
+        end
       end
-      def rpos
-        pos + size
-      end
-      def to_s
-        self.to_s
-      end
-    end
+    end # FrameCodonHelpers
 
     # The short frame uses the simplest concept to find ORFs. The sequence is
     # immutable, always forward and in frame 0. That makes it easy to reason.
     # It also return all ORF's in one go, with the left/right locations.
 
     class ShortFrameState
+      include FrameCodonHelpers
+
       def initialize seq, min_size = 30
         # @seq = seq.upcase  
-        @min_size = (min_size/3).to_i+1
+        @min_size_codons = (min_size/3).to_i+1
         @codons = FrameCodonSequence.new(seq)
       end
 
       # Return a list of ORFs delimited by STOP codons. 
       def get_stopstop_orfs 
-        get_codon_orfs1(Proc.new { | codon | STOP_CODONS.include?(codon) },false,true).map { | codons | codons.join }
+        get_codon_orfs1(Proc.new { | codon | STOP_CODONS.include?(codon) },false,true)
       end
 
       # Return a list of ORFs delimited by START-STOP codons
       def get_startstop_orfs 
-        list = get_codon_orfs2(
+        get_codon_orfs2(
                  Proc.new { | codon | STOP_CODONS.include?(codon) },
                  Proc.new { | codon | START_CODONS.include?(codon) })
-                
-        return list.first.pos*3, list.last.rpos*3, list, list.map { |codons | codons }
-
       end
 
       # Splitter for one delimiter function. +include_leftmost+ decides
@@ -57,11 +75,10 @@ module Bio
       #
       def get_codon_orfs1 splitter_func,do_include_leftmost,do_strip_leading 
         orfs = split(@codons,splitter_func)
-        p orfs
         # Drop the first sequence, if there is no match on the first position
         orfs.shift if !do_include_leftmost and orfs.size>1 and !splitter_func.call(orfs.first[0])
         orfs.map { |codons| 
-          codons.shift if do_strip_leading and splitter_func.call(codons[0])
+          codons = codons.shift if do_strip_leading and splitter_func.call(codons[0])
           codons
         }
       end
@@ -79,14 +96,16 @@ module Bio
         list = []
         node = []
         codons.each_with_index do | c, pos |
+          # p [c,pos]
           if is_splitter_func.call(c)
             node.push c
-            list.push FrameCodonSequence.new(node,pos) if node.size >= @min_size
+            size = node.size
+            # p [pos,size,node] if size >= @min_size
+            list.push FrameCodonSequence.new(node,pos+1-size) if size >= @min_size_codons
             node = []
           end
           node.push c
         end
-        p list
         list
       end
 
