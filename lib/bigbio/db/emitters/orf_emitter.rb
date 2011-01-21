@@ -9,11 +9,12 @@ module Bio
       STOP_CODONS = Set.new(%w{TAG TAA TGA UAG UAA UGA})
       START_CODONS = Set.new(%w{ATG AUG})
 
-      # Track sequence position in parent sequence
+      # Track sequence position in parent sequence (in nucleotides)
       module TrackSequenceTrait
         attr_accessor :track_sequence_pos 
         def TrackSequenceTrait.update_sequence_pos orfs, seq_pos
           orfs.each { | orf | orf.track_sequence_pos = seq_pos + orf.pos }
+          orfs
         end
       end
 
@@ -70,10 +71,12 @@ module Bio
       include FrameCodonHelpers
       include MoveShortFrame
 
-      def initialize seq, min_size = 30
+      def initialize seq, seq_pos, min_size
         # @seq = seq.upcase  
         @min_size_codons = (min_size/3).to_i
-        @codons = FrameCodonSequence.new(seq)
+        @codons = FrameCodonSequence.new(seq,seq_pos)
+        @seq_pos = seq_pos # nucleotides
+        # @codons.track_sequence_pos = seq_pos
       end
 
       # Return a list of ORFs delimited by STOP codons. 
@@ -96,10 +99,11 @@ module Bio
         orfs = split(@codons,splitter_func)
         # Drop the first sequence, if there is no match on the first position
         orfs.shift if !do_include_leftmost and orfs.size>1 and !splitter_func.call(orfs.first[0])
-        orfs.map { |codons| 
+        orfs = orfs.map { |codons| 
           codons = codons.shift if do_strip_leading and splitter_func.call(codons[0])
           codons
         }
+        TrackSequenceTrait.update_sequence_pos(orfs,@seq_pos) # nail against parent
       end
 
       # Splitter for two delimeter functions
