@@ -34,6 +34,21 @@ module Bio
           nseq = seq[remove..-1] + rseq
           ShortFrameState.new nseq,ntseq_pos,fr.min_size_codons*3
         end
+
+        def CreateShortFrame.create_left fr,orfs,lseq
+          seq = fr.seq  # original sequence
+          ntseq_pos = fr.ntseq_pos # right side of seq
+          bridge = seq.size % 3    # chomp left side
+          remove = if orfs.size > 0
+            # remove the tail of the sequence
+            seq.size - bridge - (orfs.first.pos)*3 +1
+          else 
+            0
+          end
+          ntseq_pos += remove
+          nseq = lseq + seq[0..(seq.size-remove)]
+          ShortFrameState.new nseq,ntseq_pos,fr.min_size_codons*3
+        end
       end
 
       class FrameCodonSequence 
@@ -150,13 +165,16 @@ module Bio
 
     end
 
+    # This is the reversed version, which is rather the same as the forward,
+    # though the tracked ntseq_pos should be seen from the end of the sequence,
+    # as we are emmiting sequences from the end(!) Also we need to make sure
+    # the sequence is always in frame (from the left).
     class ShortReversedFrameState < ShortFrameState
   
       def initialize seq, ntseq_pos, ntmin_size
-        chop = seq.size % 3
-        @chopped_seq = seq[0..chop-1] if chop
-        seq = seq[chop..-1]
-        super seq,ntseq_pos,ntmin_size
+        chop = seq.size % 3 # align on codons
+        super seq[chop..-1],ntseq_pos,ntmin_size
+        @seq = seq # but record full seq
       end
 
     end

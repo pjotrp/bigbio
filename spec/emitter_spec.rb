@@ -183,22 +183,26 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
   end
 
   it "should combine a reverse frame" do
-    s1 = "atggattaaatgta"
     s2 = "tatttaaatggatttaatgtaaatt"
+    #     ~===xxx============---...                               
+    s1 = "atggattaaatgta"
+    #     ......xxx=====
     # now move the other way, as sequences get emitted on the left
     fr = ShortReversedFrameState.new s2,0,0
     # p fr
+    fr.codons.to_seq.should == "ATTTAAATGGATTTAATGTAAATT"
     fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
-    # p orfs
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTTAATGTAA"]
     orfs.first.pos.should == 2 # in codons
-    fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
-    fr3.ntseq_pos.should == 9
-    fr3.codons.to_seq.should == "ATGTAATGGATTTAATGTAAA"
+    fr3 = FrameCodonHelpers::CreateShortFrame.create_left(fr,orfs,s1)
+    fr3.ntseq_pos.should == 19
+    fr3.codons.to_seq.should == "ATGGATTAAATGTATATTTAA"
     norfs = fr3.get_stopstop_orfs
     orfs += norfs
-    orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
-    orfs.map{ | orf | orf.track_sequence_pos }.should == [0,11]
+    p orfs
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTTAATGTAA", "ATGTATATTTAA"]
+    orfs.map{ | orf | orf.track_ntseq_pos }.should == [18,18+12]
   end
 
 end
