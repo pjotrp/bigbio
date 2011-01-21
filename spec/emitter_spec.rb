@@ -44,8 +44,8 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
   it "should handle min_size" do
     fr = ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa",0,9
     orfs = fr.get_stopstop_orfs
-    orfs.map{ | orf | orf.pos }.should == [ 5 ]
     orfs.map{ | orf | orf.to_seq }.should == [ "TGGATTTAA"]
+    orfs.map{ | orf | orf.pos }.should == [ 5 ]
     fr.get_startstop_orfs.should == []
   end
   it "should find ORFs in" do
@@ -147,36 +147,39 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
 
   it "should combine a forward frame without ORFs in first seq" do
     s1 = "atggattaaatgta"
-    s2 = "atggatttaatgtaaa"
+    #     ......---===xx
+    s2 = "atggatttaattattataaa"
+    #     x======xxx======xxx.
     fr = ShortFrameState.new s1,0,0
     fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
     orfs.size == 0 # in codons
     fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
-    # p fr3
-    fr3.ntseq_pos.should == 9
-    fr3.codons.to_seq.should == "ATGTAATGGATTTAATGTAAA"
+    fr3.ntseq_pos.should == 0
+    fr3.codons.to_seq.should == "ATGGATTAAATGTAATGGATTTAATTATTATAA"
     norfs = fr3.get_stopstop_orfs
-    orfs += norfs
-    orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
-    orfs.map{ | orf | orf.track_sequence_pos }.should == [0,11]
+    orfs = norfs
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGTAA","TGGATTTAA","TTATTATAA"]
+    orfs.map{ | orf | orf.track_ntseq_pos }.should == [9,9+6,9+6+9]
   end
 
   it "should combine a forward frame without ORFs in first seq" do
     s1 = "atggattaaatgta"
+    #     ......---===xx
     s2 = "atggatttaatgtaaa"
+    #     x======xxx
     fr = ShortFrameState.new s1,0,0
     fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
     orfs.size == 0 # in codons
     fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
     # p fr3
-    fr3.ntseq_pos.should == 9
-    fr3.codons.to_seq.should == "ATGTAATGGATTTAATGTAAA"
+    fr3.ntseq_pos.should == 0 # on the combined sequences
+    fr3.codons.to_seq.should == "ATGGATTAAATGTAATGGATTTAATGTAAA"
     norfs = fr3.get_stopstop_orfs
     orfs += norfs
-    orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
-    orfs.map{ | orf | orf.track_sequence_pos }.should == [0,11]
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGTAA", "TGGATTTAA"]
+    orfs.map{ | orf | orf.track_ntseq_pos }.should == [9,9+6]
   end
 
   it "should combine a reverse frame" do

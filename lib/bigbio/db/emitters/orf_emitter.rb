@@ -83,7 +83,12 @@ module Bio
       def initialize seq, ntseq_pos, ntmin_size
         # @seq = seq.upcase  
         @seq = seq
-        @min_size_codons = (ntmin_size/3).to_i
+        @min_size_codons = if ntmin_size > 3
+                             (ntmin_size/3).to_i
+                           else
+                             2  # otherwise we get single STOP codons
+                           end
+       
         @codons = FrameCodonSequence.new(seq,ntseq_pos)
         @ntseq_pos = ntseq_pos # nucleotides
         # @codons.track_sequence_pos = seq_pos
@@ -105,16 +110,15 @@ module Bio
       # the first sequence is returned when incomplete. +strip_leading+
       # is used to remove the shared codon with the last sequence.
       #
-      def get_codon_orfs1 splitter_func,do_include_leftmost,do_strip_leading 
+      def get_codon_orfs1 splitter_func,do_include_leftmost_orf,do_strip_leading_codon
         orfs = split(@codons,splitter_func)
         return [] if orfs.size == 0
         # Drop the first sequence, if there is no match on the first position
-        orfs.shift if !do_include_leftmost and !splitter_func.call(orfs.first[0])
+        orfs.shift if !do_include_leftmost_orf and !splitter_func.call(orfs.first[0])
         orfs = orfs.map { |codons| 
-          codons = codons.shift if do_strip_leading and splitter_func.call(codons[0])
+          codons = codons.shift if do_strip_leading_codon and splitter_func.call(codons[0])
           codons
         }
-        orfs = orfs.find_all { | orf | orf.size > 0 }
         TrackSequenceTrait.update_sequence_pos(orfs,@ntseq_pos) # nail against parent
       end
 
@@ -135,10 +139,11 @@ module Bio
           if is_splitter_func.call(c)
             node.push c
             size = node.size
+            # p node
             list.push FrameCodonSequence.new(node,pos+1-size) if size > @min_size_codons
             node = []
           end
-          node.push c
+          node.push c  # always push boundary codon
         end
         list
       end
