@@ -9,11 +9,28 @@ module Bio
       STOP_CODONS = Set.new(%w{TAG TAA TGA UAG UAA UGA})
       START_CODONS = Set.new(%w{ATG AUG})
 
+      # Track sequence position in parent sequence
+      module TrackSequenceTrait
+        attr_accessor :track_sequence_pos 
+        def TrackSequenceTrait.update_sequence_pos orfs, seq_pos
+          orfs.each { | orf | orf.track_sequence_pos = seq_pos + orf.pos }
+        end
+      end
+
+      # Functions that move a frame forward, or backward, 
+      # creating new short frames.
+      module MoveShortFrame
+        def shortframe_right seq
+          fr = self
+          p fr
+        end
+      end
+
       class FrameCodonSequence 
         include Enumerable
+        include TrackSequenceTrait
         attr_reader :pos     # codon position in short parent sequence
         attr_reader :codons
-        attr_accessor :abs_pos # this I need to think about.
         def initialize seq, pos=0
           if seq.kind_of?(String)
             @codons = seq.upcase.scan(/(\w\w\w)/).flatten
@@ -51,6 +68,7 @@ module Bio
 
     class ShortFrameState
       include FrameCodonHelpers
+      include MoveShortFrame
 
       def initialize seq, min_size = 30
         # @seq = seq.upcase  

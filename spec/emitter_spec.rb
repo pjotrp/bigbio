@@ -141,12 +141,14 @@ describe Bio::Big::GetFrame, "when combining frames" do
     seq_pos += remove
     s3 = s1[remove..-1] + s2
     s3.should == "atgtaatggatttaatgtaaa"
+    fr3 = fr.shortframe_right(s2)
     fr3 = ShortFrameState.new s3,0
     norfs = fr3.get_stopstop_orfs
-    norfs.each { | orf | orf.abs_pos = seq_pos + orf.pos }
+    FrameCodonHelpers::TrackSequenceTrait.update_sequence_pos norfs, seq_pos
+
     orfs += norfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
-    orfs.map{ | orf | orf.abs_pos }.should == [nil,11]
+    orfs.map{ | orf | orf.track_sequence_pos }.should == [nil,11]
     
   end
 
