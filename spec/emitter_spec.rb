@@ -127,27 +127,77 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
   end
 end
 
-describe Bio::Big::GetFrame, "when combining frames" do
+describe Bio::Big::ShortFrameState, "when combining frames" do
   include Bio::Big
   it "should combine a forward frame" do
+    s1 = "atggattaaatgtaata"
+    s2 = "atggatttaatgtaaa"
+    fr = ShortFrameState.new s1,0,0
+    fr.ntseq_pos.should == 0
+    orfs = fr.get_stopstop_orfs
+    orfs.size == 1 # in codons
+    fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
+    fr3.ntseq_pos.should == 15
+    fr3.codons.to_seq.should == "TAATGGATTTAATGTAAA"
+    norfs = fr3.get_stopstop_orfs
+    orfs += norfs
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGTAA", "TGGATTTAA"]
+    orfs.map{ | orf | orf.track_ntseq_pos }.should == [9,18]
+  end
+
+  it "should combine a forward frame without ORFs in first seq" do
     s1 = "atggattaaatgta"
     s2 = "atggatttaatgtaaa"
     fr = ShortFrameState.new s1,0,0
     fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
-    orfs.last.rpos.should == 3 # in codons
+    orfs.size == 0 # in codons
+    fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
+    # p fr3
+    fr3.ntseq_pos.should == 9
+    fr3.codons.to_seq.should == "ATGTAATGGATTTAATGTAAA"
+    norfs = fr3.get_stopstop_orfs
+    orfs += norfs
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
+    orfs.map{ | orf | orf.track_sequence_pos }.should == [0,11]
+  end
+
+  it "should combine a forward frame without ORFs in first seq" do
+    s1 = "atggattaaatgta"
+    s2 = "atggatttaatgtaaa"
+    fr = ShortFrameState.new s1,0,0
+    fr.ntseq_pos.should == 0
+    orfs = fr.get_stopstop_orfs
+    orfs.size == 0 # in codons
+    fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
+    # p fr3
+    fr3.ntseq_pos.should == 9
+    fr3.codons.to_seq.should == "ATGTAATGGATTTAATGTAAA"
+    norfs = fr3.get_stopstop_orfs
+    orfs += norfs
+    orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
+    orfs.map{ | orf | orf.track_sequence_pos }.should == [0,11]
+  end
+
+  it "should combine a reverse frame" do
+    s1 = "atggattaaatgta"
+    s2 = "tatttaaatggatttaatgtaaatt"
+    # now move the other way, as sequences get emitted on the left
+    fr = ShortReversedFrameState.new s2,0,0
+    # p fr
+    fr.ntseq_pos.should == 0
+    orfs = fr.get_stopstop_orfs
+    # p orfs
+    orfs.first.pos.should == 2 # in codons
     fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
     fr3.ntseq_pos.should == 9
     fr3.codons.to_seq.should == "ATGTAATGGATTTAATGTAAA"
     norfs = fr3.get_stopstop_orfs
-
     orfs += norfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
     orfs.map{ | orf | orf.track_sequence_pos }.should == [0,11]
-    
   end
 
-  it "should combine a reverse frame"
 end
 
 describe Bio::Big::OrfEmitter, "when using the ORF emitter" do

@@ -11,9 +11,9 @@ module Bio
 
       # Track sequence position in parent sequence (in nucleotides)
       module TrackSequenceTrait
-        attr_accessor :track_sequence_pos 
-        def TrackSequenceTrait.update_sequence_pos orfs, seq_pos
-          orfs.each { | orf | orf.track_sequence_pos = seq_pos + orf.pos }
+        attr_accessor :track_ntseq_pos 
+        def TrackSequenceTrait.update_sequence_pos orfs, ntseq_pos
+          orfs.each { | orf | orf.track_ntseq_pos = ntseq_pos + orf.pos*3 }
           orfs
         end
       end
@@ -25,7 +25,11 @@ module Bio
         def CreateShortFrame.create_right fr,orfs,rseq
           seq = fr.seq
           ntseq_pos = fr.ntseq_pos
-          remove = orfs.last.rpos*3
+          remove = if orfs.size > 0
+            orfs.last.rpos*3
+          else 
+            0
+          end
           ntseq_pos += remove
           nseq = seq[remove..-1] + rseq
           ShortFrameState.new nseq,ntseq_pos,fr.min_size_codons*3
@@ -103,12 +107,14 @@ module Bio
       #
       def get_codon_orfs1 splitter_func,do_include_leftmost,do_strip_leading 
         orfs = split(@codons,splitter_func)
+        return [] if orfs.size == 0
         # Drop the first sequence, if there is no match on the first position
-        orfs.shift if !do_include_leftmost and orfs.size>1 and !splitter_func.call(orfs.first[0])
+        orfs.shift if !do_include_leftmost and !splitter_func.call(orfs.first[0])
         orfs = orfs.map { |codons| 
           codons = codons.shift if do_strip_leading and splitter_func.call(codons[0])
           codons
         }
+        orfs = orfs.find_all { | orf | orf.size > 0 }
         TrackSequenceTrait.update_sequence_pos(orfs,@ntseq_pos) # nail against parent
       end
 
@@ -139,7 +145,14 @@ module Bio
 
     end
 
-    module GetFrame
+    class ShortReversedFrameState < ShortFrameState
+  
+      def initialize seq, ntseq_pos, ntmin_size
+        chop = seq.size % 3
+        @chopped_seq = seq[0..chop-1] if chop
+        seq = seq[chop..-1]
+        super seq,ntseq_pos,ntmin_size
+      end
 
     end
 
