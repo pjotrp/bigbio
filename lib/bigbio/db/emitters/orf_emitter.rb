@@ -20,10 +20,15 @@ module Bio
 
       # Functions that move a frame forward, or backward, 
       # creating new short frames.
-      module MoveShortFrame
-        def shortframe_right seq
-          fr = self
-          p fr
+      module CreateShortFrame
+
+        def CreateShortFrame.create_right fr,orfs,rseq
+          seq = fr.seq
+          ntseq_pos = fr.ntseq_pos
+          remove = orfs.last.rpos*3
+          ntseq_pos += remove
+          nseq = seq[remove..-1] + rseq
+          ShortFrameState.new nseq,ntseq_pos,fr.min_size_codons*3
         end
       end
 
@@ -69,13 +74,14 @@ module Bio
 
     class ShortFrameState
       include FrameCodonHelpers
-      include MoveShortFrame
+      attr_reader :seq, :ntseq_pos, :min_size_codons, :codons
 
-      def initialize seq, seq_pos, min_size
+      def initialize seq, ntseq_pos, ntmin_size
         # @seq = seq.upcase  
-        @min_size_codons = (min_size/3).to_i
-        @codons = FrameCodonSequence.new(seq,seq_pos)
-        @seq_pos = seq_pos # nucleotides
+        @seq = seq
+        @min_size_codons = (ntmin_size/3).to_i
+        @codons = FrameCodonSequence.new(seq,ntseq_pos)
+        @ntseq_pos = ntseq_pos # nucleotides
         # @codons.track_sequence_pos = seq_pos
       end
 
@@ -103,7 +109,7 @@ module Bio
           codons = codons.shift if do_strip_leading and splitter_func.call(codons[0])
           codons
         }
-        TrackSequenceTrait.update_sequence_pos(orfs,@seq_pos) # nail against parent
+        TrackSequenceTrait.update_sequence_pos(orfs,@ntseq_pos) # nail against parent
       end
 
       # Splitter for two delimeter functions

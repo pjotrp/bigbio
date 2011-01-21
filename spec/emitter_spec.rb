@@ -130,21 +130,16 @@ end
 describe Bio::Big::GetFrame, "when combining frames" do
   include Bio::Big
   it "should combine a forward frame" do
-    seq_pos = 0
     s1 = "atggattaaatgta"
     s2 = "atggatttaatgtaaa"
     fr = ShortFrameState.new s1,0,0
+    fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
-    orfs.last.rpos.should == 3
-    remove = orfs.last.rpos*3
-    remove.should == 9
-    seq_pos += remove
-    s3 = s1[remove..-1] + s2
-    s3.should == "atgtaatggatttaatgtaaa"
-    fr3 = fr.shortframe_right(s2)
-    fr3 = ShortFrameState.new s3,seq_pos,0
+    orfs.last.rpos.should == 3 # in codons
+    fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
+    fr3.ntseq_pos.should == 9
+    fr3.codons.to_seq.should == "ATGTAATGGATTTAATGTAAA"
     norfs = fr3.get_stopstop_orfs
-    # FrameCodonHelpers::TrackSequenceTrait.update_sequence_pos norfs, seq_pos
 
     orfs += norfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA", "TGGATTTAA"]
