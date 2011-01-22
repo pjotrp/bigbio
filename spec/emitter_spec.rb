@@ -183,8 +183,19 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
   end
 
   it "should combine a reverse frame" do
-    # ttaaatgtaatttaggtaaatttat atgtaaattaggta
+    # Reversed (real locations on contig):
+    #
+    # |  3                21  B |
+    # ttaaatgtaatttaggtaaatttat atgtaaattaggta (reversed)
     # ...^--============xxx^=======xxx
+    #       ^                     ^
+    # Actual feed:
+    #
+    # s2=              s1=
+    # 18                 0 (ntseq_pos)
+    # "atggattaaatgta" "tatttaaatggatttaatgtaaatt"
+    #  ......xxx=====   ~===xx^============--^...                               
+    #  0  1  2  3        0  1  2  3 
 
     s2 = "tatttaaatggatttaatgtaaatt"
     #     ~===xx^============--^...                               
@@ -203,10 +214,9 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
     fr3.codons.to_seq.should == "ATGGATTAAATGTATATTTAA"
     norfs = fr3.get_stopstop_orfs
     orfs += norfs
-    p orfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTTAATGTAA", "ATGTATATTTAA"]
-    orfs.map{ | orf | orf.pos }.should == [3,2]
-    orfs.map{ | orf | orf.track_ntseq_pos }.should == [3,21]
+    orfs.map{ | orf | orf.pos }.should == [2,3]
+    orfs.map{ | orf | orf.track_ntseq_pos }.should == [6,18+9]
   end
 
 end

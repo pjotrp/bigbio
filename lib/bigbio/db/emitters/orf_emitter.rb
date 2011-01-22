@@ -17,7 +17,8 @@ module Bio
           orfs
         end
         def TrackSequenceTrait.update_reversed_sequence_pos orfs, ntseq_pos
-          orfs.each { | orf | orf.track_ntseq_pos = -1 }
+          # is the same
+          orfs.each { | orf | orf.track_ntseq_pos = ntseq_pos + orf.pos*3 }
           orfs
         end
       end
