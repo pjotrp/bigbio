@@ -16,6 +16,10 @@ module Bio
           orfs.each { | orf | orf.track_ntseq_pos = ntseq_pos + orf.pos*3 }
           orfs
         end
+        def TrackSequenceTrait.update_reversed_sequence_pos orfs, ntseq_pos
+          orfs.each { | orf | orf.track_ntseq_pos = -1 }
+          orfs
+        end
       end
 
       # Functions that move a frame forward, or backward, 
@@ -41,26 +45,25 @@ module Bio
           # |  3                21  B |
           # ttaaatgtaatttaggtaaatttat atgtaaattaggta (reversed)
           # ...^--============xxx^=======xxx
-          #
+          #       ^                     ^
           # Actual feed:
           #
-          # "tatttaaatggatttaatgtaaatt"
-          #  ~===xx^============--^...                               
-          # "atggattaaatgta"
-          #  ......xxx=====
+          # s2=              s1=
+          # "atggattaaatgta" "tatttaaatggatttaatgtaaatt"
+          #  ......xxx=====   ~===xx^============--^...                               
           #
           seq1 = fr.seq             # original sequence
           len1 = seq1.size
           ntseq_pos1 = fr.ntseq_pos # right side of seq (|)
           bridge = len1 % 3    # chomp left side (B)
           remove = if orfs.size > 0
-            len1 - bridge - (orfs.first.pos)*3 
+            len1 - bridge - (orfs.first.pos)*3 + 1
           else 
             0
           end
-          ntseq_pos2 = ntseq_pos1+remove  # pos against main contig
+          ntseq_pos2 = ntseq_pos1+remove-1  # pos against main contig
           seq2 = nseq + seq1[0..(len1-remove)]
-          ShortFrameState.new seq2,ntseq_pos2,fr.min_size_codons*3
+          ShortReversedFrameState.new seq2,ntseq_pos2,fr.min_size_codons*3
         end
       end
 
@@ -147,7 +150,11 @@ module Bio
           codons = codons.shift if do_strip_leading_codon and splitter_func.call(codons[0])
           codons
         }
-        TrackSequenceTrait.update_sequence_pos(orfs,@ntseq_pos) # nail against parent
+        if @reversed == nil
+          TrackSequenceTrait.update_sequence_pos(orfs,@ntseq_pos) # nail against parent
+        else
+          TrackSequenceTrait.update_reversed_sequence_pos(orfs,@ntseq_pos) # nail against parent
+        end
       end
 
       # Splitter for two delimeter functions
@@ -183,8 +190,10 @@ module Bio
     # as we are emmiting sequences from the end(!) Also we need to make sure
     # the sequence is always in frame (from the left).
     class ShortReversedFrameState < ShortFrameState
+      attr_accessor :reversed
   
       def initialize seq, ntseq_pos, ntmin_size
+        @reversed = true
         chop = seq.size % 3 # align on codons
         super seq[chop..-1],ntseq_pos,ntmin_size
         @seq = seq # but record full seq
