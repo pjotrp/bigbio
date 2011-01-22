@@ -183,8 +183,11 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
   end
 
   it "should combine a reverse frame" do
+    # ttaaatgtaatttaggtaaatttat atgtaaattaggta
+    # ...^--============xxx^=======xxx
+
     s2 = "tatttaaatggatttaatgtaaatt"
-    #     ~===xxx============---...                               
+    #     ~===xx^============--^...                               
     s1 = "atggattaaatgta"
     #     ......xxx=====
     # now move the other way, as sequences get emitted on the left
@@ -196,13 +199,13 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTTAATGTAA"]
     orfs.first.pos.should == 2 # in codons
     fr3 = FrameCodonHelpers::CreateShortFrame.create_left(fr,orfs,s1)
-    fr3.ntseq_pos.should == 19
+    fr3.ntseq_pos.should == 18 # 6 codons
     fr3.codons.to_seq.should == "ATGGATTAAATGTATATTTAA"
     norfs = fr3.get_stopstop_orfs
     orfs += norfs
     p orfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTTAATGTAA", "ATGTATATTTAA"]
-    orfs.map{ | orf | orf.track_ntseq_pos }.should == [18,18+12]
+    orfs.map{ | orf | orf.track_ntseq_pos }.should == [3,21]
   end
 
 end

@@ -35,19 +35,32 @@ module Bio
           ShortFrameState.new nseq,ntseq_pos,fr.min_size_codons*3
         end
 
-        def CreateShortFrame.create_left fr,orfs,lseq
-          seq = fr.seq  # original sequence
-          ntseq_pos = fr.ntseq_pos # right side of seq
-          bridge = seq.size % 3    # chomp left side
+        def CreateShortFrame.create_left fr,orfs,nseq
+          # Reversed (real locations on contig):
+          #
+          # |  3                21  B |
+          # ttaaatgtaatttaggtaaatttat atgtaaattaggta (reversed)
+          # ...^--============xxx^=======xxx
+          #
+          # Actual feed:
+          #
+          # "tatttaaatggatttaatgtaaatt"
+          #  ~===xx^============--^...                               
+          # "atggattaaatgta"
+          #  ......xxx=====
+          #
+          seq1 = fr.seq             # original sequence
+          len1 = seq1.size
+          ntseq_pos1 = fr.ntseq_pos # right side of seq (|)
+          bridge = len1 % 3    # chomp left side (B)
           remove = if orfs.size > 0
-            # remove the tail of the sequence
-            seq.size - bridge - (orfs.first.pos)*3 +1
+            len1 - bridge - (orfs.first.pos)*3 
           else 
             0
           end
-          ntseq_pos += remove
-          nseq = lseq + seq[0..(seq.size-remove)]
-          ShortFrameState.new nseq,ntseq_pos,fr.min_size_codons*3
+          ntseq_pos2 = ntseq_pos1+remove  # pos against main contig
+          seq2 = nseq + seq1[0..(len1-remove)]
+          ShortFrameState.new seq2,ntseq_pos2,fr.min_size_codons*3
         end
       end
 
