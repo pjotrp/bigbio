@@ -51,7 +51,7 @@ module Bio
           # s2=              s1=
           # "atggattaaatgta" "tatttaaatggatttaatgtaaatt"
           #  ......xxx=====   ~===xx^============--^...                               
-          #
+          #  0  1  2  3        0  1  2  3 
           seq1 = fr.seq             # original sequence
           len1 = seq1.size
           ntseq_pos1 = fr.ntseq_pos # right side of seq (|)

@@ -205,6 +205,7 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
     orfs += norfs
     p orfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTTAATGTAA", "ATGTATATTTAA"]
+    orfs.map{ | orf | orf.pos }.should == [3,2]
     orfs.map{ | orf | orf.track_ntseq_pos }.should == [3,21]
   end
 
