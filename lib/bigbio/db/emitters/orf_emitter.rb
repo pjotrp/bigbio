@@ -208,6 +208,7 @@ module Bio
       # object. Type can be a symbol or a function. Symbols are
       #
       #   :stopstop   All sequences from STOP to STOP codon
+      #   :startstop  All sequences from START to STOP codon
       #
       # size control is in nucleotides.
       #
@@ -222,7 +223,27 @@ module Bio
       # contained ORFs for every resulting frame (-3..-1, 1..3 )
       def emit_seq
         @em.emit_seq do | part, index, tag, seq |
-          # p [part, seq]
+          p [part, seq]
+          # Yield frame 1..3
+          (1..3).each do | frame |
+            fr = ShortFrameState.new seq[frame-1..-1],0,0
+            orfs = fr.get_stopstop_orfs
+            orfs.each do | orf |
+              yield frame, index, 'unknown', orf.track_ntseq_pos, orf.to_seq
+            end
+          end
+          # Yield frame -1..-3
+          ntseq = Bio::Sequence::NA.new(seq)
+          rev_seq = ntseq.complement
+
+          # p rev_seq
+          (1..3).each do | frame |
+            fr = ShortReversedFrameState.new rev_seq[0..rev_seq.size-frame+1],0,0
+            orfs = fr.get_stopstop_orfs
+            orfs.each do | orf |
+              yield -frame, index, 'unknown', orf.track_ntseq_pos, orf.to_seq
+            end
+          end
           break
         end
       end

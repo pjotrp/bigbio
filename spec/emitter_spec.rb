@@ -226,10 +226,11 @@ describe Bio::Big::OrfEmitter, "when using the ORF emitter" do
 
   it "should emit STOP-STOP ORFs in all frames" do
     f = FastaEmitter.new("test/data/fasta/nt.fa")
-    OrfEmitter.new(f,:stopstop)::emit_seq do | frame, index, tag, seq |
-      p [index, tag ] # , seq]
+    OrfEmitter.new(f,:stopstop)::emit_seq do | frame, index, tag, pos, seq |
+      p [frame,index, tag, pos, seq]
     end
   end
+  it "should show the same result between small and large emits"
   if false
   it "should emit START-STOP ORFs in all frames"
   it "should emit ORFs on any filter"
