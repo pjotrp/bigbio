@@ -226,11 +226,34 @@ describe Bio::Big::OrfEmitter, "when using the ORF emitter" do
 
   it "should emit STOP-STOP ORFs in all frames" do
     f = FastaEmitter.new("test/data/fasta/nt.fa")
+    seqs = []
     OrfEmitter.new(f,:stopstop)::emit_seq do | frame, index, tag, pos, seq |
-      p [frame,index, tag, pos, seq]
+      break if index != 0
+      if frame == 0 and index == 0 and pos == 39
+        seq.should == "TTNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA"
+        # p [frame,index, tag, pos, seq]
+      end
+      if index == 0
+        seqs.push seq
+      end
     end
+    seqs.join(';')[50..350].should == "TNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA;GCAAAGAGCGAGAAAATGAGCGGANCGGTAAGAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGCTAAGGTCCTTGTCACAGATGAGGCTCGTAGAGAGTTCTCTAACCTTCGTCGTGCTTTCGATGAGGTTAACACACAGCTCCAGACCAAATTTAGTCAGGACCT"
   end
-  it "should show the same result between small and large emits"
+  it "should emit STOP-STOP ORFs in all frames using a shorter emitter" do
+    f = FastaEmitter.new("test/data/fasta/nt.fa",150)
+    seqs = []
+    OrfEmitter.new(f,:stopstop)::emit_seq do | frame, index, tag, pos, seq |
+      break if index != 0
+      if frame == 0 and index == 0 and pos == 39
+        seq.should == "TTNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA"
+        # p [frame,index, tag, pos, seq]
+      end
+      if index == 0
+        seqs.push seq
+      end
+    end
+    seqs.join(';')[50..350].should == "TNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA;GCAAAGAGCGAGAAAATGAGCGGANCGGTAAGAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGCTAAGGTCCTTGTCACAGATGAGGCTCGTAGAGAGTTCTCTAACCTTCGTCGTGCTTTCGATGAGGTTAACACACAGCTCCAGACCAAATTTAGTCAGGACCT"
+  end
   if false
   it "should emit START-STOP ORFs in all frames"
   it "should emit ORFs on any filter"

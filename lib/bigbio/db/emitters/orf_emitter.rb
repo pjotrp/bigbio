@@ -212,6 +212,22 @@ module Bio
       #
       # size control is in nucleotides.
       #
+      # The difference with most other getorf implementations, including
+      # EMBOSS, is that:
+      #
+      # 1) ORFs get emitted during the reading of large continuous sequences,
+      #    e.g. chromosomes.
+      # 2) This allows processing in parallel to IO, even on a single CPU
+      # 3) ORFs come with splitting CODONs
+      # 4) Bordering ORFs are not included (by default), which is somehow
+      #    not easy with EMBOSS getorf
+      #
+      # I have carefully designed this code, so it is easy to reason about
+      # the steps and prove correct. It is easy to understand, and
+      # therefore to parallelize correctly. Some features are:
+      #
+      # 5) Emit size does not matter for correctness
+      # 
       def initialize emit, type, min_size=30, max_size=nil
         @em = emit
         @type = type
@@ -221,30 +237,45 @@ module Bio
 
       # Concats sequences from the emitter and yields the
       # contained ORFs for every resulting frame (-3..-1, 1..3 )
+      #
+      # First :head, then :mid parts get emitted, closed by the :tail part.
+      #
       def emit_seq
         @em.emit_seq do | part, index, tag, seq |
           p [part, seq]
-          # Yield frame 1..3
-          (1..3).each do | frame |
-            fr = ShortFrameState.new seq[frame-1..-1],0,0
-            orfs = fr.get_stopstop_orfs
-            orfs.each do | orf |
-              yield frame, index, 'unknown', orf.track_ntseq_pos, orf.to_seq
-            end
-          end
-          # Yield frame -1..-3
-          ntseq = Bio::Sequence::NA.new(seq)
-          rev_seq = ntseq.complement
+          # case part do
+          #   when :head
+          #   when :mid
+          #   when :tail
+          # end
+          emit_forward(part, index, tag, seq) { |*x| yield *x }
+          emit_reverse(part, index, tag, seq) { |*x| yield *x }
+        end
+      end
 
-          # p rev_seq
-          (1..3).each do | frame |
-            fr = ShortReversedFrameState.new rev_seq[0..rev_seq.size-frame+1],0,0
-            orfs = fr.get_stopstop_orfs
-            orfs.each do | orf |
-              yield -frame, index, 'unknown', orf.track_ntseq_pos, orf.to_seq
-            end
+      private
+
+      def emit_forward(part, index, tag, seq)
+        # Yield frame 1..3
+        (1..3).each do | frame |
+          fr = ShortFrameState.new seq[frame-1..-1],0,0
+          orfs = fr.get_stopstop_orfs
+          orfs.each do | orf |
+            yield frame, index, tag, orf.track_ntseq_pos, orf.to_seq
           end
-          break
+        end
+      end
+
+      def emit_reverse(part, index, tag, seq)
+        # Yield frame -1..-3
+        ntseq = Bio::Sequence::NA.new(seq)
+        rev_seq = ntseq.complement
+        (1..3).each do | frame |
+          fr = ShortReversedFrameState.new rev_seq[0..rev_seq.size-frame],0,0
+          orfs = fr.get_stopstop_orfs
+          orfs.each do | orf |
+            yield -frame, index, tag, orf.track_ntseq_pos, orf.to_seq
+          end
         end
       end
     end
