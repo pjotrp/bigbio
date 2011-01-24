@@ -227,6 +227,8 @@ module Bio
       # therefore to parallelize correctly. Some features are:
       #
       # 5) Emit size does not matter for correctness
+      # 6) Reverse strands are positioned according to 
+      #    GFF3 on the parent contig
       # 
       def initialize emit, type, min_size=30, max_size=nil
         @em = emit
