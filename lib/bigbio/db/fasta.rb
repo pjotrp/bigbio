@@ -7,7 +7,6 @@
 #
 
 require 'bigbio/db/fasta/fastarecord'
-require 'bigbio/db/fasta/fasta_emitter'
 require 'bigbio/db/fasta/fastareader'
 require 'bigbio/db/fasta/fastawriter'
 require 'bigbio/db/fasta/fastapairedreader'
