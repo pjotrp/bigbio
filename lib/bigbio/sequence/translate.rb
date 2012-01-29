@@ -11,9 +11,10 @@ module Nucleotide
 
       # Table can be either an id (integer) or a Biolib::Emboss TrnTable
 
-    def initialize table
+    def initialize table 
+      table = 0 if table == nil
       if table.kind_of? Numeric
-        @trn_table = translation_table(table)
+        @trn_table = Bio::Big::TranslationAdapter.translation_table(table)
       else
         @trn_table = table
       end
@@ -27,7 +28,7 @@ module Nucleotide
       # remove white space
       seq = seq.gsub(/\s/,'')
       [1,2,3,-1,-2,-3].each do | frame |
-        aa = translate(@trn_table,frame,seq)
+        aa = Bio::Big::TranslationAdapter.translate(@trn_table,frame,seq)
         res.push({:frame => frame, :sequence => aa})
       end
       res

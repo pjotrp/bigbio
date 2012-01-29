@@ -13,7 +13,10 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     descr = 'Test'
     # sequence = 'AGCTGAATCTGGTAGATACCATCTTTAA'
     sequence = 'AGCTGAATCTGG'
-    trn_table = Biolib::Emboss.ajTrnNewI(1)
+    # trn_table = Biolib::Emboss.ajTrnNewI(1)
+    trn_table = Bio::Big::TranslationAdapter.translation_table(1)
+  
+
     @predictorf = PredictORF.new(id,descr,sequence,trn_table)
     @orflist = @predictorf.stopstop(0)
     # @orflist.each do | orf | p [orf.descr,orf] end
@@ -103,7 +106,8 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
                 TTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTC
                 AGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCTAGATGC
                 CTTTCATACTTAAAGATCAAAGGACTTGACGATGCAATAAGCTTCTCGTCTGTAAAACCC"
-    @trn_table = Biolib::Emboss.ajTrnNewI(1)
+    # @trn_table = Biolib::Emboss.ajTrnNewI(1)
+    @trn_table = Bio::Big::TranslationAdapter.translation_table(1)
     @predictorf = PredictORF.new(id,descr,sequence,@trn_table)
     orflist = @predictorf.stopstop(0)
     # orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
