@@ -19,7 +19,7 @@ module Bio
         index = 0
         begin
           line = f.gets.strip
-          if line[0] =~ /^>/
+          if line.first =~ /^>/
             yield :tail,index,tag,seq
             tag = tag_digest(line)
             seq = ""
@@ -36,10 +36,10 @@ module Bio
       end
 
       def tag_digest tag 
-        if tag[0] == '>'
+        if tag[0..0] == '>'
           tag[1..-1]
         else
-          raise "Tag error #{tag}"
+          raise "Tag error in '#{tag}'"
         end
       end
     end

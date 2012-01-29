@@ -73,6 +73,12 @@ class PredictORF
     @descr     = descr
     @seq       = seq.gsub(/\s/,'')
     @trn_table = trn_table
+    @startcodons =  # FIXME: this should be linked properly
+      if trn_table == 0
+        ['ATG','AUG']   # Eukaryote
+      else
+        ['ATG','TTG','CTG','AUG','UUG','CUG']
+      end
   end
 
   # Return a list of predicted ORFs with :minsize AA's. The ORF's
@@ -105,7 +111,7 @@ class PredictORF
   def startstop minsize=30
     stopstop(minsize).find_all { | orf | 
       codon1= orf.nt.seq[0..2].upcase
-      ['ATG','TTG','CTG','AUG','UUG','CUG'].index(codon1) != nil
+      @startcodons.index(codon1) != nil
     }
   end 
 

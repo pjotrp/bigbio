@@ -131,6 +131,10 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
     # APESDVSSTADRALDTVH*RRDPRVVNFEARERKLVLLMX
   end
 
+  it "startstop(30) should render ORFs staring with a start codon" do
+    orflist = @predictorf.startstop(5)
+    orflist.size.should == 1
+  end
   it "stopstop(0) should render 33 reading frames and seven ORF" do
     orflist = @predictorf.stopstop(0)
     orflist.size.should == 33

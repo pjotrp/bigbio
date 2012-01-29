@@ -96,19 +96,15 @@ ARGV.each do | fn |
   nt = Bio::Big::FastaEmitter.new(fn)
 
   include Bio::Big::TranslationAdapter
-  trn_table = translation_table(1)
+  trn_table = Bio::Big::TranslationAdapter.translation_table(1)
 
-  nt.emit_seq(30) do | state, tag, seq |
-    predict = PredictORF.new(rec.id,rec.descr,rec.seq,trn_table)
-    # if longest_match
-    #   orf = predict.send('longest_'+heuristic,minsize)
-    #   out.write(orf.to_fastarec) if orf
-    # else
-      orflist = predict.send(heuristic,minsize)
-      orflist.each do | orf |
-        p orf
-      end
-    # end
+  nt.emit_seq do | where, location, tag, seq |
+    p [where, location, tag, seq]
+    # predict = PredictORF.new(rec.id,rec.descr,rec.seq,trn_table)
+    #  orflist = predict.send(heuristic,minsize)
+    #  orflist.each do | orf |
+    #    p orf
+    #  end
   end
 end
 
