@@ -88,8 +88,8 @@ end
 
 Bio::Log::CLI.configure('bigbio')
 
-print "Heuristic is #{heuristic}\n"
-print "Minsize #{minsize}\n"
+# print "Heuristic is #{heuristic}\n"
+# print "Minsize #{minsize}\n"
 
 ARGV.each do | fn |
   raise "File #{fn} does not exist" if !File.exist?(fn)
@@ -98,13 +98,17 @@ ARGV.each do | fn |
   include Bio::Big::TranslationAdapter
   trn_table = Bio::Big::TranslationAdapter.translation_table(1)
 
+  id = 0
   nt.emit_seq do | where, location, tag, seq |
-    p [where, location, tag, seq]
-    # predict = PredictORF.new(rec.id,rec.descr,rec.seq,trn_table)
-    #  orflist = predict.send(heuristic,minsize)
-    #  orflist.each do | orf |
-    #    p orf
-    #  end
+    id += 1
+    # p [where, location, tag, seq]
+    predict = PredictORF.new(id,tag,seq,trn_table)
+    orflist = predict.send(heuristic,minsize)
+    orflist.each do | orf |
+      print '>',orf.descr,"\n"
+      print orf.nt.to_s,"\n"
+      # p orf
+    end
   end
 end
 

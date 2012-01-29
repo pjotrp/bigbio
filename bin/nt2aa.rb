@@ -9,7 +9,7 @@
 # Copyright (C) 2012 Pjotr Prins <pjotr.prins@thebird.nl> 
 
 USAGE =<<EOM
-  ruby #{__FILE__} inputfile(s)
+  ruby #{__FILE__} [--six-frame] inputfile(s)
 EOM
 
 $: << File.dirname(__FILE__)+'/../lib'
@@ -19,6 +19,14 @@ require 'bigbio'
 if ARGV.size < 1
   print USAGE
   exit 1
+end
+
+do_sixframes = false
+frames = [1]
+if ARGV[0] == '--six-frame'
+  ARGV.shift!
+  do_sixframes = true
+  frames = [-3,-2,-1,1,2,3]
 end
 
 require 'bigbio/adapters/translate'
@@ -31,7 +39,7 @@ ARGV.each do | fn |
   nt.each { | rec |
       ajpseq   = Bio::Big::TranslationAdapter.pre_translate(rec.seq,"Test sequence")
 
-      [-3,-2,-1,1,2,3].each do | frame |
+      frames.each do | frame |
         aa  = Bio::Big::TranslationAdapter.translate(trn_table,frame, rec.seq, ajpseq)
 
         # ajpseqt  = Biolib::Emboss.ajTrnSeqOrig(trnTable,ajpseq,frame)

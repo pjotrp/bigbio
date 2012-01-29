@@ -22,6 +22,7 @@ module Bio
       # Translate
       def self.translate trn_table, frame, seq, pre_seq = nil
         if Environment.instance.biolib
+          # Using EMBOSS for translation
           ajpseq = pre_seq
           if not pre_seq
             ajpseq = Biolib::Emboss.ajSeqNewNameC(seq,"Test sequence")
@@ -29,6 +30,7 @@ module Bio
           ajpseqt  = Biolib::Emboss.ajTrnSeqOrig(trn_table,ajpseq,frame)
           Biolib::Emboss.ajSeqGetSeqCopyC(ajpseqt)
         else
+          # Using BioRuby for translation
           ntseq = if frame > 0 
             Bio::Sequence::NA.new(seq[frame-1..-1])
           else

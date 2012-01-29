@@ -26,6 +26,11 @@ class ORFnucleotides < ORFsequence
   def fullseq
     @seq
   end
+
+  def to_s
+    seq
+  end
+
 end
 
 # Helper class for storing ORF information
