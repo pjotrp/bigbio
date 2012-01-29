@@ -113,6 +113,7 @@ module Bio
       attr_reader :seq, :ntseq_pos, :min_size_codons, :codons
 
       def initialize seq, ntseq_pos, ntmin_size
+        @reversed = nil
         # @seq = seq.upcase  
         @seq = seq
         @min_size_codons = if ntmin_size > 3
@@ -250,8 +251,8 @@ module Bio
           #   when :mid
           #   when :tail
           # end
-          emit_forward(part, index, tag, seq) { |*x| yield *x }
-          emit_reverse(part, index, tag, seq) { |*x| yield *x }
+          emit_forward(part, index, tag, seq) { |*x| yield(*x) }
+          emit_reverse(part, index, tag, seq) { |*x| yield(*x) }
         end
       end
 
@@ -276,7 +277,7 @@ module Bio
           fr = ShortReversedFrameState.new rev_seq[0..rev_seq.size-frame],0,0
           orfs = fr.get_stopstop_orfs
           orfs.each do | orf |
-            yield -frame, index, tag, orf.track_ntseq_pos, orf.to_seq
+            yield(-frame,index,tag,orf.track_ntseq_pos,orf.to_seq)
           end
         end
       end

@@ -1,4 +1,6 @@
 
+require 'rspec'
+
 $: << "../lib"
 
 require 'bigbio'
