@@ -44,7 +44,7 @@ ARGV.each do | fn |
 
         # ajpseqt  = Biolib::Emboss.ajTrnSeqOrig(trnTable,ajpseq,frame)
         # aa       = Biolib::Emboss.ajSeqGetSeqCopyC(ajpseqt)
-        print "> ",rec.id," ",frame.to_s,"\n"
+        print "> ",rec.descr," [",frame.to_s,"]\n"
         print aa,"\n"
     end
   }

@@ -80,7 +80,7 @@ class PredictORF
     @trn_table = trn_table
     @startcodons =  # FIXME: this should be linked properly
       if trn_table == 0
-        ['ATG','AUG']   # Eukaryote
+        Bio::Big::FrameCodonHelpers.START_CODONS
       else
         ['ATG','TTG','CTG','AUG','UUG','CUG']
       end
