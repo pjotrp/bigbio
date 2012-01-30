@@ -77,15 +77,17 @@ end
 
 class PredictORF
 
+  include Bio::Big::FrameCodonHelpers 
+
   def initialize id, descr, seq, trn_table
     @id        = id
     @descr     = descr
     @seq       = seq.gsub(/\s/,'')
     @trn_table = trn_table
     @startcodons =  # FIXME: this should be linked properly
-      if trn_table == 0
-        Bio::Big::FrameCodonHelpers.START_CODONS
-      else
+      if trn_table == nil or trn_table == 0
+        START_CODONS
+      else # prokaryote
         ['ATG','TTG','CTG','AUG','UUG','CUG']
       end
   end
@@ -121,8 +123,8 @@ class PredictORF
   # now, a later version should use the EMBOSS translation table).
   def startstop minsize=30
     stopstop(minsize).find_all { | orf | 
-      codon1= orf.nt.seq[0..2].upcase
-      @startcodons.index(codon1) != nil
+      p [orf.nt.seq[0..2].upcase,@startcodons.include?(orf.nt.seq[0..2].upcase)]
+      @startcodons.include?(orf.nt.seq[0..2].upcase)
     }
   end 
 

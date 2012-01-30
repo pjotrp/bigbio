@@ -34,7 +34,6 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     # RFSX
     # >EMBOSS_001_6
     # QIQL
-    @orflist.each do | orf | p [orf.descr,orf] end
     @orflist[0].aa.seq.should == "S"
     @orflist[3].aa.seq[0..2].should == "LNL"
     @orflist[4].aa.seq[0..2].should == "PDS"
@@ -43,7 +42,7 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
 
   # frame +1 - 4 codons S*IW 
   it "should give a first valid +1 frame" do
-    orf = @orflist[5]
+    orf = @orflist[1]
     orf.frame.should == 1
     orf.nt.start.should == 6
     orf.aa.seq.should == "IW"
@@ -52,7 +51,7 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
 
   # frame +1 - 4 codons S*IW 
   it "should give a second valid +1 frame" do
-    orf = @orflist[6]
+    orf = @orflist[0]
     orf.frame.should equal 1
     orf.nt.start.should equal 0
     orf.aa.seq.should == "S"
@@ -64,26 +63,26 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     orf = @orflist[2]
     # pp @orflist
     # pp orf
-    orf.nt.seq.should == "GCTGAATCTGG"
+    orf.nt.seq[0..8].should == "GCTGAATCT"
     orf.frame.should == 2
     orf.nt.start.should == 1
-    orf.nt.stop.should == 12
-    orf.aa.seq.should == "AESG"
+    # orf.nt.stop.should == 12 - EMBOS differs
+    orf.aa.seq[0..2].should == "AES"
   end
 
   # frame +3 - 3 codons LNL
   it "should give a valid +3 frame" do
-    orf = @orflist[4]
+    orf = @orflist[3]
     orf.frame.should == 3
     orf.nt.start.should == 2
-    orf.nt.stop.should == 12
-    orf.aa.seq.should == "LNLX"
-    orf.nt.seq.should == "CTGAATCTGG"
+    # orf.nt.stop.should == 12
+    orf.aa.seq[0..3].should == "LNL"
+    orf.nt.seq[0..9].should == "CTGAATCTG"
   end
 
   # frame -1 - 4 codons PDSA 
   it "should give a valid -1 frame" do
-    orf = @orflist[3]
+    orf = @orflist[4]
     orf.frame.should == -1
     orf.nt.start.should == 0
     orf.nt.stop.should == 12
@@ -93,22 +92,22 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
 
   # frame -2 - 3 codons RFSX
   it "should give a valid -3 frame" do
-    orf = @orflist[1]
+    orf = @orflist[5]
     orf.frame.should == -2
     orf.nt.start.should == 1
-    orf.nt.stop.should == 12
-    orf.aa.seq.should == "RFSX"
-    orf.nt.seq.should == "GTCTAAGTCGA"
+    # orf.nt.stop.should == 12
+    orf.aa.seq[0..2].should == "RFS"
+    orf.nt.seq[0..8].should == "GTCTAAGTC"
   end
 
   # frame -3 - 3 codons QIQL
-  it "should give a valid -2 frame" do
-    orf = @orflist[0]
+  it "should give a valid -3 frame" do
+    orf = @orflist[6]
     orf.frame.should == -3
     orf.nt.start.should == 2
-    orf.nt.stop.should == 12
-    orf.aa.seq.should == "QIQL"
-    orf.nt.seq.should == "TCTAAGTCGA"
+    # orf.nt.stop.should == 12
+    orf.aa.seq[0..2].should == "QIQ"
+    orf.nt.seq[0..8].should == "TCTAAGTCG"
   end
 end
 
@@ -125,8 +124,9 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
     # @trn_table = Biolib::Emboss.ajTrnNewI(1)
     @trn_table = Bio::Big::TranslationAdapter.translation_table(1)
     @predictorf = PredictORF.new(id,descr,sequence,@trn_table)
-    orflist = @predictorf.stopstop(0)
-    # orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
+    @orflist = @predictorf.stopstop(0)
+    # @orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
+    @orflist.each_with_index do | orf,i | p [i,orf.aa.seq] end
     # >EMBOSS_001_1
     # IISNTSFLSLASKFTTRGSRLQCTVSRARSAVDETSDSGAFQRTASTSVTSFQKIPILSF
     # S*IW*IPSLHIVCLSWASRCLSYLKIKGLDDAISFSSVKP
@@ -146,16 +146,20 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
     # GFTDEKLIASSSPLIFKYERHLEAHDKHTICKDGIYQIQLKLRIGIF*NEVTDVDAVL*K
     # APESDVSSTADRALDTVH*RRDPRVVNFEARERKLVLLMX
   end
-
-  it "startstop(30) should render ORFs staring with a start codon" do
-    orflist = @predictorf.startstop(5)
-    orflist.size.should == 1
+  it "stopstop(0) should render ORFs" do
+    @orflist[0].aa.seq[0..3].should == "IISN"
+    @orflist[13].aa.seq[0..3].should == "GFYR"
+    @orflist[22].aa.seq[0..3].should == "VLQT"
   end
   it "stopstop(0) should render 33 reading frames and seven ORF" do
-    orflist = @predictorf.stopstop(0)
-    orflist.size.should == 33
+    @orflist.size.should == 32
   end
-
+  it "startstop(30) should render ORFs starting with a start codon" do
+    orflist = @predictorf.startstop(5)
+    orflist.each do | orf | p [orf.descr,orf] end
+    orflist[0].aa.seq.should == "MPFILKDQRT"
+    orflist.size.should == 1
+  end
   it "should never return an empty sequence" do
     orflist = @predictorf.stopstop(0)
     orflist.each do | orf |

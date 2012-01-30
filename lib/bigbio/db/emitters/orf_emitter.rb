@@ -9,7 +9,7 @@ module Bio
       STOP_CODONS = Set.new(%w{TAG TAA TGA UAG UAA UGA})
       START_CODONS = Set.new(%w{ATG AUG})
 
-      # Track sequence position in parent sequence (in nucleotides)
+  # Track sequence position in parent sequence (in nucleotides)
       module TrackSequenceTrait
         attr_accessor :track_ntseq_pos 
         def TrackSequenceTrait.update_sequence_pos orfs, ntseq_pos
@@ -110,6 +110,7 @@ module Bio
 
     class ShortFrameState
       include FrameCodonHelpers
+
       attr_reader :seq, :ntseq_pos, :min_size_codons, :codons
 
       def initialize seq, ntseq_pos, ntmin_size

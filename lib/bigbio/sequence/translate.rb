@@ -1,5 +1,4 @@
 
-
 module Nucleotide
 
   module TranslationTable

@@ -6,6 +6,7 @@ module Bio
     module TranslationAdapter
 
       VALID_FRAME_VALUES = [ 0, -1, -2, -3, 1, 2, 3 ]
+
       def self.translation_table num
         if Environment.instance.biolib
           Biolib::Emboss.ajTrnNewI(num)
