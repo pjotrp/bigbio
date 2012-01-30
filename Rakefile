@@ -13,7 +13,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "bio-bigbio"
-  gem.homepage = "http://github.com/pjotrp/bioruby-bigbioruby"
+  gem.homepage = "http://github.com/pjotrp/bigbio"
   gem.license = "MIT"
   gem.summary = %Q{Low memory sequence emitters}
   gem.description = %Q{Fasta reader, ORF emitter, sequence translation}
