@@ -56,7 +56,7 @@ Gem::Specification.new do |s|
     "test/performance/translate_with_biolib.rb",
     "test/performance/translate_with_bioruby.rb"
   ]
-  s.homepage = "http://github.com/pjotrp/bioruby-bigbioruby"
+  s.homepage = "http://github.com/pjotrp/bigbio"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.10"
