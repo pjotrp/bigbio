@@ -87,7 +87,7 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     orf.nt.start.should == 0
     orf.nt.stop.should == 12
     orf.aa.seq.should == "PDSA"
-    orf.nt.seq.should == "GGTCTAAGTCGA"
+    orf.nt.seq.should == "CCAGATTCAGCT"
   end
 
   # frame -2 - 3 codons RFSX
@@ -97,7 +97,7 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     orf.nt.start.should == 1
     # orf.nt.stop.should == 12
     orf.aa.seq[0..2].should == "RFS"
-    orf.nt.seq[0..8].should == "GTCTAAGTC"
+    orf.nt.seq[0..8].should == "CAGATTCAG"
   end
 
   # frame -3 - 3 codons QIQL
@@ -107,7 +107,7 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     orf.nt.start.should == 2
     # orf.nt.stop.should == 12
     orf.aa.seq[0..2].should == "QIQ"
-    orf.nt.seq[0..8].should == "TCTAAGTCG"
+    orf.nt.seq[0..8].should == "AGATTCAGC"
   end
 end
 
@@ -126,7 +126,6 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
     @predictorf = PredictORF.new(id,descr,sequence,@trn_table)
     @orflist = @predictorf.stopstop(0)
     # @orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
-    @orflist.each_with_index do | orf,i | p [i,orf.aa.seq] end
     # >EMBOSS_001_1
     # IISNTSFLSLASKFTTRGSRLQCTVSRARSAVDETSDSGAFQRTASTSVTSFQKIPILSF
     # S*IW*IPSLHIVCLSWASRCLSYLKIKGLDDAISFSSVKP
@@ -156,7 +155,7 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
   end
   it "startstop(30) should render ORFs starting with a start codon" do
     orflist = @predictorf.startstop(5)
-    orflist.each do | orf | p [orf.descr,orf] end
+    # orflist.each do | orf | p [orf.descr,orf] end
     orflist[0].aa.seq.should == "MPFILKDQRT"
     orflist.size.should == 1
   end
@@ -175,14 +174,6 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
   it "should return 2 sequences when the minsize is 133" do
     orflist = @predictorf.stopstop(45)
     orflist.size.should == 3
-  end
-
-  it "should correctly handle a double STOP codon" do
-    # Frame 5: ELESFETKLRMSMQFFEKLLNLMSHPPQIEPLILYTEDEIHE**TLKRERGSWCC**X
-    orflist = @predictorf.stopstop(0)
-    orflist[4].aa.seq.should == "ELESFETKLRMSMQFFEKLLNLMSHPPQIEPLILYTEDEIHE"
-    orflist[17].aa.seq.should == "TLKRERGSWCC"
-    orflist[29].aa.seq.should == "X"
   end
 
   it "should have -1 frame" do

@@ -20,7 +20,9 @@ module Nucleotide
     end
 
     # Return all six reading frames as an Array - ordered as
-    # frames [1,2,3,-1,-2,-3] with as tuples [frame, AAsequence]
+    # frames [1,2,3,-1,-2,-3] with as tuples [frame, AAsequence].
+    #
+    # Note that the nucleotide sequence does not get modified.
 
     def aa_6_frames seq
       res = []

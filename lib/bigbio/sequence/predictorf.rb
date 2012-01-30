@@ -48,8 +48,10 @@ class ORF
     if stop > nt.size
       stop = nt.size
     end
-    # ---- if frame < 0 it should reverse
-    nt = nt.reverse if frame < 0
+    # ---- if frame < 0 it should reverse complement
+    if frame < 0
+      nt = Bio::Sequence::NA.new(nt).reverse_complement.to_s.upcase
+    end
     # p [start, stop, stop-start]
     # p nt
     fr = frame.to_s
@@ -93,7 +95,8 @@ class PredictORF
   end
 
   # Return a list of predicted ORFs with :minsize AA's. The ORF's
-  # are between STOP codons (so sequences without START are included)
+  # are between STOP codons (so sequences without a proper START codon 
+  # are included)
   def stopstop minsize=30
     type = "XX"
     orfs = []
@@ -123,7 +126,7 @@ class PredictORF
   # now, a later version should use the EMBOSS translation table).
   def startstop minsize=30
     stopstop(minsize).find_all { | orf | 
-      p [orf.nt.seq[0..2].upcase,@startcodons.include?(orf.nt.seq[0..2].upcase)]
+      # p [orf.nt.seq[0..2].upcase,@startcodons.include?(orf.nt.seq[0..2].upcase)]
       @startcodons.include?(orf.nt.seq[0..2].upcase)
     }
   end 
