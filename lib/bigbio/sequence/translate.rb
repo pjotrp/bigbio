@@ -23,11 +23,24 @@ module Nucleotide
     # Return all six reading frames as an Array - ordered as
     # frames [1,2,3,-1,-2,-3] with as tuples [frame, AAsequence]
 
-    def aa_frames seq
+    def aa_6_frames seq
       res = []
       # remove white space
       seq = seq.gsub(/\s/,'')
       [1,2,3,-1,-2,-3].each do | frame |
+        aa = Bio::Big::TranslationAdapter.translate(@trn_table,frame,seq)
+        res.push({:frame => frame, :sequence => aa})
+      end
+      res
+    end
+    # Return all forward reading frames as an Array - ordered as
+    # frames [1,2,3] with as tuples [frame, AAsequence]
+
+    def aa_forward_frames seq
+      res = []
+      # remove white space
+      seq = seq.gsub(/\s/,'')
+      [1,2,3].each do | frame |
         aa = Bio::Big::TranslationAdapter.translate(@trn_table,frame,seq)
         res.push({:frame => frame, :sequence => aa})
       end

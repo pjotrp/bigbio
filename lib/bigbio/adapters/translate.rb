@@ -24,7 +24,8 @@ module Bio
       # Translate using frame (pre_seq is only used for EMBOSS)
       # 
       # Valid frame values are 0,1,2,3 and -1,-2,-3, where 0 and 1 are the
-      # standard reading frame.
+      # standard reading frame. The negative values translate the reverse
+      # complement of the strand.
       def self.translate trn_table, frame, seq, pre_seq = nil
         raise "Illegal frame #{frame}" if VALID_FRAME_VALUES.index(frame) == nil
         frame = 1 if frame == 0

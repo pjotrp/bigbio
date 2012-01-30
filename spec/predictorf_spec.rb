@@ -48,11 +48,13 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
   # frame +2 - 3 codons AES
   it "should give a valid +2 frame" do 
     orf = @orflist[2]
+    # pp @orflist
+    # pp orf
+    orf.nt.seq.should == "GCTGAATCTGG"
     orf.frame.should == 2
     orf.nt.start.should == 1
     orf.nt.stop.should == 12
     orf.aa.seq.should == "AESG"
-    orf.nt.seq.should == "GCTGAATCTGG"
   end
 
   # frame +3 - 3 codons LNL
@@ -171,8 +173,8 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
     # TRSTSSEL*SEREEAGVAN
     predictorf = PredictORF.new('test','TEST',sequence,@trn_table)
     orflist = predictorf.stopstop(0)
-    orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
-    orflist[3].aa.seq.should == "QHQLPLSRFKVHYSWISX"
+    # orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
+    orflist[2].aa.seq[0..18].should == "QHQLPLSRFKVHYSWIS"
   end
 
   it "should correctly handle a sequence starting with a STOP codon" do
@@ -182,7 +184,7 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
     predictorf = PredictORF.new('test','TEST',sequence,@trn_table)
     orflist = predictorf.stopstop(0)
     # orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
-    orflist[3].aa.seq.should == "QHQLPLSRFKVHYSWISX"
+    orflist[2].aa.seq[0..18].should == "QHQLPLSRFKVHYSWIS"
   end
 
 end

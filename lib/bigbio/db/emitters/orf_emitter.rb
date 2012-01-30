@@ -239,13 +239,15 @@ module Bio
       end
 
       # Concats sequences from the emitter and yields the
-      # contained ORFs for every resulting frame (-3..-1, 1..3 )
+      # contained ORFs for every resulting frame (-3..-1, 1..3 ). Note
+      # that for the reverse frame, the resulting sequence is complemented!
+      # Translate these sequences in a forward frame only.
       #
       # First :head, then :mid parts get emitted, closed by the :tail part.
       #
       def emit_seq
         @em.emit_seq do | part, index, tag, seq |
-          p [part, seq]
+          # p [part, seq]
           # case part do
           #   when :head
           #   when :mid

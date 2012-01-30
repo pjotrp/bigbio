@@ -60,8 +60,12 @@ class ORF
     @aa = ORFaminoacids.new(aa)
   end
 
-  def <=> orf
-    orf.aa.seq.size <=> aa.seq.size
+  def <=> other
+    if frame == other.frame
+      nt.seq <=> other.nt.seq
+    else
+      frame <=> other.frame
+    end
   end
 
   def to_fastarec
@@ -92,8 +96,8 @@ class PredictORF
     type = "XX"
     orfs = []
     translate = Nucleotide::Translate.new(@trn_table)
-    aa_frames = translate.aa_frames(@seq)
-    pp aa_frames
+    aa_frames = translate.aa_forward_frames(@seq)
+    # pp aa_frames
     num = 0
     aa_frames.each do | aa_frame |
       frame = aa_frame[:frame]
