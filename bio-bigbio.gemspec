@@ -14,13 +14,26 @@ Gem::Specification.new do |s|
   s.email = "pjotr.public01@thebird.nl"
   s.executables = ["getorf", "nt2aa.rb"]
   s.extra_rdoc_files = [
-    "LICENSE"
+    "LICENSE",
+    "README.rdoc"
   ]
   s.files = [
+    "Gemfile",
+    "Gemfile.lock",
     "LICENSE",
+    "README.rdoc",
+    "Rakefile",
+    "VERSION",
+    "bin/getorf",
+    "bin/nt2aa.rb",
+    "bio-bigbio.gemspec",
+    "doc/bigbio_getorf.wtex",
     "lib/bigbio.rb",
+    "lib/bigbio/adapters/translate.rb",
     "lib/bigbio/db/blast.rb",
     "lib/bigbio/db/blast/blastclust.rb",
+    "lib/bigbio/db/emitters/fasta_emitter.rb",
+    "lib/bigbio/db/emitters/orf_emitter.rb",
     "lib/bigbio/db/fasta.rb",
     "lib/bigbio/db/fasta/fastaindex.rb",
     "lib/bigbio/db/fasta/fastapairedreader.rb",
@@ -29,8 +42,16 @@ Gem::Specification.new do |s|
     "lib/bigbio/db/fasta/fastarecord.rb",
     "lib/bigbio/db/fasta/fastawriter.rb",
     "lib/bigbio/db/fasta/indexer.rb",
+    "lib/bigbio/environment.rb",
+    "lib/bigbio/sequence/predictorf.rb",
+    "lib/bigbio/sequence/translate.rb",
+    "spec/emitter_spec.rb",
+    "spec/predictorf_spec.rb",
+    "test/data/EMBOSS/EGC.1",
     "test/data/fasta/nt.fa",
     "test/doctest/test_fasta.rb",
+    "test/doctest/test_frames.rb",
+    "test/doctest/test_getorf.rb",
     "test/doctest/test_paired.rb",
     "test/performance/translate_with_biolib.rb",
     "test/performance/translate_with_bioruby.rb"
@@ -41,7 +62,11 @@ Gem::Specification.new do |s|
   s.rubygems_version = "1.8.10"
   s.summary = "Low memory sequence emitters"
   s.test_files = [
+    "spec/emitter_spec.rb",
+    "spec/predictorf_spec.rb",
     "test/doctest/test_fasta.rb",
+    "test/doctest/test_frames.rb",
+    "test/doctest/test_getorf.rb",
     "test/doctest/test_paired.rb",
     "test/performance/translate_with_biolib.rb",
     "test/performance/translate_with_bioruby.rb"
