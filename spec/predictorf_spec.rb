@@ -16,14 +16,28 @@ describe PredictORF, " when using a short simple nucleotide sequence" do
     # trn_table = Biolib::Emboss.ajTrnNewI(1)
     trn_table = Bio::Big::TranslationAdapter.translation_table(1)
   
-
     @predictorf = PredictORF.new(id,descr,sequence,trn_table)
     @orflist = @predictorf.stopstop(0)
     # @orflist.each do | orf | p [orf.descr,orf] end
   end
 
   it "stopstop(0) should render six reading frames and seven ORF" do
-    @orflist = @predictorf.stopstop(0)
+    # >EMBOSS_001_1
+    # S*IW
+    # >EMBOSS_001_2
+    # AESG
+    # >EMBOSS_001_3
+    # LNLX
+    # >EMBOSS_001_4
+    # PDSA
+    # >EMBOSS_001_5
+    # RFSX
+    # >EMBOSS_001_6
+    # QIQL
+    @orflist.each do | orf | p [orf.descr,orf] end
+    @orflist[0].aa.seq.should == "S"
+    @orflist[3].aa.seq[0..2].should == "LNL"
+    @orflist[4].aa.seq[0..2].should == "PDS"
     @orflist.size.should == 7
   end
 

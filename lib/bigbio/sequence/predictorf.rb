@@ -96,7 +96,8 @@ class PredictORF
     type = "XX"
     orfs = []
     translate = Nucleotide::Translate.new(@trn_table)
-    aa_frames = translate.aa_forward_frames(@seq)
+    aa_frames = translate.aa_6_frames(@seq)
+    # p @seq
     # pp aa_frames
     num = 0
     aa_frames.each do | aa_frame |
@@ -112,7 +113,7 @@ class PredictORF
         aa_start += candidate.size + 1
       end
     end
-    orfs.sort
+    orfs
   end
 
   # Return a list of predicted ORFs with :minsize AA's. The ORF's
