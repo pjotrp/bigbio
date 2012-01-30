@@ -23,7 +23,7 @@ if $UNITTEST
 =begin
 
   >> $: << '../../lib'
-  >> require 'biobig'
+  >> require 'bigbio'
   >> TESTDIR = '../data/fasta'
   >> nt_FILE = TESTDIR + "/nt.fa"
   >> AA_FILE = TESTDIR + "/aa.fa"
@@ -75,6 +75,14 @@ again
   => "121"
   >> nt_in.get("121").seq
   => "CAATTTTTTAAACATTTACTGGTTACTAAATTTGGAGATAGTATCACATTTCTAAAGGGTAAGTTGGAAAATAAATTTACAGAAAAATTATAAGTATAAAAAGTATACAGATGGATTACTTAGACAGCAGCGGGTGTGGGGGCTGATGCGGAGTGGTCGTGGTCGAAGAAGGAACCCGGTTTCCGGGGGGATCTCAGTAAACTCGGAAAGAATGGCCCGAATTCGTCACCGCCAACTAGTTCTTCCTCGAGAAGCACTTCAACGAGCTTATCATGGGCTTCACGATTGTTCTTTATGTGGGTTAGAGCTATCTCATATGCACTGGCTGATAGTTTCTTCACCGGCAGAATCAATGTCTTCTGGAAGCTTCTCAGAAATGGAGTTTCTTGGCACCATCCT"
+
+It is also possible to fetch a numbered record
+
+  >> rec = nt_in.get_by_index(0)
+  >> rec.id
+  => "1"
+  >> rec.descr
+  => "PUT-157a-Arabidopsis_thaliana-1\tPlantGDB-assembled Unique Transcript-fragment derived from Arabidopsis_thaliana mRNAs Jan_15_2007 (based on GenBank release 157)."
 
 =end
 

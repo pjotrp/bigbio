@@ -16,7 +16,21 @@ class FastaPairedRecord
     @nt = nt
     @aa = aa
     raise "ID error NT #{nt.id} not matching AA #{aa.id}" if nt.id != aa.id
-    raise "Sequence size mismatch for #{nt.id}" if nt.seq.size != aa.seq.size*3
+    if nt.seq.size == aa.seq.size*3-1
+      # account for EMBOSS cleverness
+      nt.seq.chop!
+      nt.seq.chop!
+      aa.seq.chop!
+    end
+    if nt.seq.size == aa.seq.size*3-2
+      # account for EMBOSS cleverness
+      nt.seq.chop!
+      aa.seq.chop!
+    end
+    if nt.seq.size == aa.seq.size*3-3
+      aa.seq.chop!
+    end
+    raise "Sequence size mismatch for #{nt.id} <nt:#{nt.seq.size} != #{aa.seq.size*3} (aa:#{aa.seq.size}*3)>" if nt.seq.size != aa.seq.size*3
   end
 
   def id

@@ -1,0 +1,118 @@
+#! /usr/bin/ruby
+#
+# Predict ORF's from nucleotide sequences using the BigBio predictors. 
+# The input is a fasta file, the output consists of
+# a FASTA amino acid sequence file with matching nucleotide sequences
+# (aa_heuristic.fa and nt_heuristic.fa respectively)
+#
+# You can choose the heuristic on the command line (default stopstop).
+#
+# Author:: Pjotr Prins
+# Copyright:: 2009-2011
+# License:: Ruby License
+#
+# Copyright (C) 2009-2011 Pjotr Prins <pjotr.prins@thebird.nl>
+
+rootpath = File.dirname(File.dirname(__FILE__))
+$: << File.join(rootpath,'lib')
+
+BIGBIO_VERSION = File.new(File.join(rootpath,'VERSION')).read.chomp
+
+USAGE =<<EOM
+  ruby #{__FILE__} [-h stopstop] [--min-size 30] inputfile(s)
+
+  Use --help for more options
+
+EOM
+
+# require 'biolib/emboss'
+require 'bigbio'
+require 'optparse'
+
+$stderr.print "getorf BioRuby BigBio Plugin "+BIGBIO_VERSION+" Copyright (C) 2009-2011 Pjotr Prins <pjotr.prins@thebird.nl>\n\n"
+
+Bio::Log::CLI.logger('stderr')
+Bio::Log::CLI.trace('info')
+
+heuristic = 'stopstop'
+minsize   = 30
+longest_match = false
+
+opts = OptionParser.new() { |opts|
+  opts.on_tail("-?", "--help", "Print this message") {
+    print(USAGE)
+    print(opts)
+    print <<EXAMPLE
+   
+EXAMPLE
+    exit()
+  }
+   
+  opts.on("-h heuristic", String, "Heuristic (stopstop)") do | s |
+    heuristic = s
+  end
+  opts.on("-s size", "--min-size", Integer, "Minimal sequence size") do | n |
+    minsize = n
+  end
+  opts.on("--longest", "Only get longest ORF match") do 
+    longest_match = true
+  end
+
+  opts.on("--logger filename",String,"Log to file (default stderr)") do | name |
+    Bio::Log::CLI.logger(name)
+  end
+
+  opts.on("--trace options",String,"Set log level (default INFO, see bio-logger)
+") do | s |
+    Bio::Log::CLI.trace(s)
+  end
+
+  opts.on("-q", "--quiet", "Run quietly") do |q|
+    Bio::Log::CLI.trace('error')
+  end
+
+  opts.on("-v", "--verbose", "Run verbosely") do |v|
+    Bio::Log::CLI.trace('info')
+  end
+
+  opts.on("--debug", "Show debug messages") do |v|
+    Bio::Log::CLI.trace('debug')
+    options.debug = true
+  end
+}
+opts.parse!(ARGV)
+if ARGV.size == 0
+  print USAGE
+  exit 1
+end
+
+Bio::Log::CLI.configure('bigbio')
+
+# print "Heuristic is #{heuristic}\n"
+# print "Minsize #{minsize}\n"
+
+ARGV.each do | fn |
+  raise "File #{fn} does not exist" if !File.exist?(fn)
+  nt = Bio::Big::FastaEmitter.new(fn)
+
+  include Bio::Big::TranslationAdapter
+  trn_table = Bio::Big::TranslationAdapter.translation_table(1)
+
+  id = 0
+  nt.emit_seq do | where, location, tag, seq |
+    id += 1
+    # p [where, location, tag, seq]
+    predict = PredictORF.new(id,tag,seq,trn_table)
+    orflist = predict.send(heuristic,minsize)
+    orflist.each do | orf |
+      print '>',orf.descr,"\n"
+      print orf.nt.to_s,"\n"
+      # p orf
+    end
+  end
+end
+
+
+
+
+
