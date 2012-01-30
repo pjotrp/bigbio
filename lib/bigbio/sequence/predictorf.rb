@@ -81,7 +81,7 @@ class PredictORF
 
   include Bio::Big::FrameCodonHelpers 
 
-  def initialize id, descr, seq, trn_table
+  def initialize id, descr, seq, trn_table = nil
     @id        = id
     @descr     = descr
     @seq       = seq.gsub(/\s/,'')
