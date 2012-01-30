@@ -4,6 +4,8 @@
 module Bio
   module Big
     module TranslationAdapter
+
+      VALID_FRAME_VALUES = [ 0, -1, -2, -3, 1, 2, 3 ]
       def self.translation_table num
         if Environment.instance.biolib
           Biolib::Emboss.ajTrnNewI(num)
@@ -19,8 +21,13 @@ module Bio
         end
       end
 
-      # Translate
+      # Translate using frame (pre_seq is only used for EMBOSS)
+      # 
+      # Valid frame values are 0,1,2,3 and -1,-2,-3, where 0 and 1 are the
+      # standard reading frame.
       def self.translate trn_table, frame, seq, pre_seq = nil
+        raise "Illegal frame #{frame}" if VALID_FRAME_VALUES.index(frame) == nil
+        frame = 1 if frame == 0
         if Environment.instance.biolib
           # Using EMBOSS for translation
           ajpseq = pre_seq
@@ -34,9 +41,19 @@ module Bio
           ntseq = if frame > 0 
             Bio::Sequence::NA.new(seq[frame-1..-1])
           else
-            Bio::Sequence::NA.new(seq.reverse[-frame-1..-1])
+            # This to match EMBOSS frames
+            rframe =
+              case frame
+                when -2 
+                  -3 
+                when -3
+                  -2
+                else 
+                  -1
+              end
+            Bio::Sequence::NA.new(seq[0..rframe]).reverse_complement
           end
-          # ntseq
+          # pp ntseq
           ntseq.translate.to_s
         end
       end

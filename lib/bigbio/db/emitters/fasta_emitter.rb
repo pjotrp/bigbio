@@ -19,7 +19,7 @@ module Bio
         index = 0
         begin
           line = f.gets.strip
-          if line.first =~ /^>/
+          if line =~ /^>/
             yield :tail,index,tag,seq
             tag = tag_digest(line)
             seq = ""

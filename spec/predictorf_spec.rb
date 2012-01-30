@@ -165,6 +165,16 @@ describe PredictORF, " when using a more complicated nucleotide sequence" do
     orflist[29].aa.seq.should == "X"
   end
 
+  it "should have -1 frame" do
+    sequence = "ATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT"
+    # >EMBOSS_001_4
+    # TRSTSSEL*SEREEAGVAN
+    predictorf = PredictORF.new('test','TEST',sequence,@trn_table)
+    orflist = predictorf.stopstop(0)
+    orflist.each_with_index do | orf,i | p [i,orf.descr,orf.aa.seq,orf.nt.seq] end
+    orflist[3].aa.seq.should == "QHQLPLSRFKVHYSWISX"
+  end
+
   it "should correctly handle a sequence starting with a STOP codon" do
     sequence = "ATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT"
     # >EMBOSS_001_3

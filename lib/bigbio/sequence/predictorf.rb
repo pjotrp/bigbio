@@ -93,6 +93,7 @@ class PredictORF
     orfs = []
     translate = Nucleotide::Translate.new(@trn_table)
     aa_frames = translate.aa_frames(@seq)
+    pp aa_frames
     num = 0
     aa_frames.each do | aa_frame |
       frame = aa_frame[:frame]
