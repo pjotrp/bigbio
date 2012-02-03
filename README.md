@@ -33,6 +33,26 @@ fasta.each do | rec |
 end
 ```
 
+Write a FASTA file. Any object can be passed in, as long
+as it responds to 'descr' and 'seq.to_s', or 'id' and 'seq.to_s'. E.g.
+
+```ruby
+class StorageObject
+  attr_accessor :descr, :seq
+end
+
+mysequence = StorageObject.new
+mysequence.descr = 'Test'
+mysequence.seq = "agtcta"
+```
+
+now we can write a FASTA file
+
+```ruby
+fasta = FastaWriter.new(fn)
+fasta.write(mysequence)
+```
+
 ## Fetch ORFs from a sequence
 
 BigBio can parse a sequence for ORFs. Together with the FastaReader

@@ -7,10 +7,15 @@ class FastaWriter
     @f = File.open(fn,"w")
   end
 
-  # write a FASTA item
+  # write a FASTA item. An itex should respond to descr and seq,
+  # or id and seq
   def write item
-    @f.write ">"+item.id+' '+item.descr+"\n"
-    @f.write item.seq.strip+"\n"
+    if item.respond_to?(:descr)
+      @f.write ">"+item.descr+"\n"
+    else
+      @f.write ">"+item.id+"\n"
+    end
+    @f.write item.seq.to_s.strip+"\n"
   end
 
   def close
