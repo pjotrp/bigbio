@@ -33,8 +33,15 @@ fasta.each do | rec |
 end
 ```
 
-Write a FASTA file. Any object can be passed in, as long
-as it responds to 'descr' and 'seq.to_s', or 'id' and 'seq.to_s'. E.g.
+Write a FASTA file. The simple way
+
+```ruby
+fasta = FastaWriter.new(fn)
+fasta.write('Test',"agtcta")
+```
+
+Any object can be passed in, however, as long as it responds to
+'descr' and 'seq.to_s', or 'id' and 'seq.to_s'. E.g.
 
 ```ruby
 class StorageObject
@@ -46,7 +53,7 @@ mysequence.descr = 'Test'
 mysequence.seq = "agtcta"
 ```
 
-now we can write a FASTA file
+write the FASTA file
 
 ```ruby
 fasta = FastaWriter.new(fn)
