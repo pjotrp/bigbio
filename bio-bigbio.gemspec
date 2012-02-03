@@ -5,23 +5,23 @@
 
 Gem::Specification.new do |s|
   s.name = "bio-bigbio"
-  s.version = "0.1.2"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pjotr Prins"]
-  s.date = "2012-01-30"
+  s.date = "2012-02-03"
   s.description = "Fasta reader, ORF emitter, sequence translation"
   s.email = "pjotr.public01@thebird.nl"
   s.executables = ["getorf", "nt2aa.rb"]
   s.extra_rdoc_files = [
     "LICENSE",
-    "README.rdoc"
+    "README.md"
   ]
   s.files = [
     "Gemfile",
     "Gemfile.lock",
     "LICENSE",
-    "README.rdoc",
+    "README.md",
     "Rakefile",
     "VERSION",
     "bin/getorf",
