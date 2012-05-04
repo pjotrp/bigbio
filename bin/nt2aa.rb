@@ -3,11 +3,6 @@
 # Translate nucleotide sequences into aminoacids sequences in all 
 # reading frames.
 #
-#
-# (: pjotrp 2009, 2012 rblicense :)
-#
-# Copyright (C) 2012 Pjotr Prins <pjotr.prins@thebird.nl> 
-
 USAGE =<<EOM
   ruby #{__FILE__} [--six-frame] inputfile(s)
 EOM

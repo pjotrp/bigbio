@@ -6,12 +6,6 @@
 # (aa_heuristic.fa and nt_heuristic.fa respectively)
 #
 # You can choose the heuristic on the command line (default stopstop).
-#
-# Author:: Pjotr Prins
-# Copyright:: 2009-2011
-# License:: Ruby License
-#
-# Copyright (C) 2009-2011 Pjotr Prins <pjotr.prins@thebird.nl>
 
 rootpath = File.dirname(File.dirname(__FILE__))
 $: << File.join(rootpath,'lib')

@@ -83,6 +83,15 @@ translate = Nucleotide::Translate.new(trn_table)
 aa_frames = translate.aa_6_frames("ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT")
 ```
 
+# Command line tools
+
+Some functionality comes also as executable command line tools (see the
+./bin directory). Use the -h switch to get information. Current tools
+are 
+
+1. getorf: fetch all areas between start-stop and stop-stop codons in six frames (using EMBOSS when biolib is available)
+2. nt2aa.rb: translate in six frames (using EMBOSS when biolib is available)
+
 # Install
 
 The easy way
