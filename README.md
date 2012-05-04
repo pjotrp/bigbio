@@ -20,6 +20,8 @@ to the BioRuby and/or BioLib mailing lists.
 * BigBio has a FASTA file emitter, with iterates FASTA files and
   iterates sequences without loading everything in memory.
 
+Warning: this software is experimental. Chech the issue list first.
+
 # Examples
 
 ## Iterate through a FASTA file
