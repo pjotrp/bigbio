@@ -29,11 +29,31 @@ Warning: this software is experimental. Chech the issue list first.
 Read a file without loading the whole thing in memory
 
 ```ruby
+require 'bigbio'
+
 fasta = FastaReader.new(fn)
 fasta.each do | rec |
   print rec.descr,rec.seq
 end
 ```
+
+Since FastaReader parses the ID, write a tab file with id and sequence
+
+```ruby
+i = 1
+print "num\tid\tseq\n"
+FastaReader.new(fn).each do | rec |
+  if rec.id =~ /(AT\w+)/
+    print i,"\t",$1,"\t",rec.seq,"\n"
+    i += 1
+  end
+end
+```
+
+wich, for example, can be turned into RDF with the
+[bio-table](https://github.com/pjotrp/bioruby-table) biogem.
+
+## Write a FASTA file
 
 Write a FASTA file. The simple way
 
