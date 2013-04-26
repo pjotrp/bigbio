@@ -30,6 +30,11 @@ class OptParser
         options.codonize = b
       end
 
+      opts.on("--min [size]",
+              "Set minimum sequence size") do |min|
+        options.min = min.to_i
+      end
+
       opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
         options.verbose = v
       end
@@ -57,6 +62,8 @@ FastaReader::emit_fastarecord(-> { ARGF.gets }) { | rec |
     size = rec.seq.size
     rec.seq = rec.seq[0..size - (size % 3) - 1]
   end
+  next if options.min and req.seq.size < options.min
+  
   print rec.to_fasta
 }
 
