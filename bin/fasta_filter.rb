@@ -3,6 +3,8 @@
 # Filter for FASTA files
 #
 
+$: << File.dirname(__FILE__)+'/../lib'
+
 require 'bigbio'
 require 'optparse'
 require 'ostruct'

@@ -19,10 +19,10 @@ instead.
   sequences using an EMBOSS C function, or BioRuby's translator.
 * BigBio has an ORF emitter which parses DNA/RNA sequences and emits
   ORFs between START_STOP or STOP_STOP codons.
-* BigBio has a FASTA file emitter, with iterates FASTA files and
-  iterates sequences without loading everything in memory.
-
-Warning: this software is experimental. Chech the issue list first.
+* BigBio has a terrific FASTA file emitter which iterates FASTA files and
+  iterates sequences without loading everything in memory. There is
+  also an indexed edition
+* BigBio has a Phylip (PAML style) emitter and writer
 
 # Examples
 
@@ -109,7 +109,7 @@ the idea of using a combination of lambda and block. For example:
 ```
 
 which takes STDIN line by line, and outputs FASTA on STDOUT. This is 
-a correct design as the FastaReader and FastaWriter know nothing of
+a better design as the FastaReader and FastaWriter know nothing of
 the mechanism fetching and displaying data. These can both be 'pure' 
 functions. Note also that the data is never fully loaded into RAM.
 
