@@ -103,7 +103,7 @@ want to use STDIN or some other source instead? I have come round to
 the idea of using a combination of lambda and block. For example:
 
 ```ruby
-  FastaReader::emit_seq(-> {gets}) { |rec|
+  FastaReader::emit_fastarecord(-> {gets}) { |rec|
     print FastaWriter.to_fasta(rec)
   }
 ```
@@ -116,7 +116,7 @@ functions. Note also that the data is never fully loaded into RAM.
 Here the transformer functional style
 
 ```ruby
-  FastaReader::emit_seq(-> {gets}) { |rec|
+  FastaReader::emit_fastarecord(-> {gets}) { |rec|
     (id1,id2) = /(\S+)\s+(\S+)/.match(rec.descr)
     print FastaWriter.to_fasta(id2,req.seq)
   }
