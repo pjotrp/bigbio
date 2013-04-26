@@ -135,14 +135,17 @@ end
 
 class FastaReader
 
-  def FastaReader::emit_seq func
-    buf = func.call
+  # func passes in a FASTA buffer. Every time a record is parsed it is 
+  # yielded.
+  #
+  def FastaReader::emit getbuf_func
+    buf = getbuf_func.call
     seq = ""
     id = nil
     descr = nil
     buf.split(/\n/).each do | line |
       if line =~ /^>/
-        yield FastaRecord.new(id, descr, seq) if id and seq and seq.size > 0
+        yield id, descr, seq if descr
         descr = line[1..-1].strip
         matched = /^(\S+)/.match(descr)
         id = matched[0]
@@ -150,6 +153,13 @@ class FastaReader
       else
         seq += line.strip
       end
+    end
+    yield id, descr, seq if descr
+  end
+
+  def FastaReader::emit_fastarecord getbuf_func
+    emit(getbuf_func) do | id, descr, seq |
+      yield FastaRecord.new(id, descr, seq) 
     end
   end
 
