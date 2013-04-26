@@ -7,6 +7,10 @@ class FastaRecord
     @descr = descr
     @seq = seq
   end
+
+  def to_fasta
+    ">"+@descr+"\n"+@seq+"\n"
+  end
 end
 
 class FastaPairedRecord

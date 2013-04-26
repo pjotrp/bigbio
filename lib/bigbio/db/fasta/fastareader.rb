@@ -139,22 +139,23 @@ class FastaReader
   # yielded.
   #
   def FastaReader::emit getbuf_func
-    buf = getbuf_func.call
     seq = ""
     id = nil
     descr = nil
-    buf.split(/\n/).each do | line |
-      if line =~ /^>/
-        yield id, descr, seq if descr
-        descr = line[1..-1].strip
-        matched = /^(\S+)/.match(descr)
-        id = matched[0]
-        seq = ""
-      else
-        seq += line.strip
+    while buf = getbuf_func.call
+      buf.split(/\n/).each do | line |
+        if line =~ /^>/
+          yield id, descr, seq if descr
+          descr = line[1..-1].strip
+          matched = /^(\S+)/.match(descr)
+          id = matched[0]
+          seq = ""
+        else
+          seq += line.strip
+        end
       end
     end
-    yield id, descr, seq if descr
+    yield id, descr, seq if descr and seq.size > 0
   end
 
   def FastaReader::emit_fastarecord getbuf_func
