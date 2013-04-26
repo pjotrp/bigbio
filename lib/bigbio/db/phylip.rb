@@ -17,7 +17,7 @@ module Bio
   module Big
     module PhylipReader
       # Define get_line as a lambda function, e.g.
-      #   Bio::Big::PhylipReader.emit_seq(lambda { lines.next }) { | name, seq | p [name,seq] }
+      #   Bio::Big::PhylipReader.emit_seq(-> { lines.next }) { | name, seq | p [name,seq] }
 
       def PhylipReader::emit_seq get_line
         line = get_line.call.strip

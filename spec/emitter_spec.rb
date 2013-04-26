@@ -20,6 +20,23 @@ describe Bio::Big::FastaEmitter, "when using the emitter" do
     end
   end
 
+  it "should emit functional style" do
+    count = 0
+    FastaReader::emit_seq(lambda { File.open("test/data/fasta/nt.fa").read() }) do |rec|
+      case count
+        when 0
+          rec.id.should == "PUT-157a-Arabidopsis_thaliana-1"
+          rec.seq[0..10].should == "AGGTTCGNACG"
+        when 1
+          rec.id.should == "PUT-157a-Arabidopsis_thaliana-2"
+          rec.seq[0..10].should == "AGACAAACGAC"
+        else
+          break
+      end
+      count += 1
+    end 
+  end
+
   it "should emit large parts" do 
     FastaEmitter.new("test/data/fasta/nt.fa").emit_seq do | part, index, tag, seq |
       # p [index, part, tag, seq]

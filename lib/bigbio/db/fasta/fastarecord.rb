@@ -30,7 +30,9 @@ class FastaPairedRecord
     if nt.seq.size == aa.seq.size*3-3
       aa.seq.chop!
     end
-    raise "Sequence size mismatch for #{nt.id} <nt:#{nt.seq.size} != #{aa.seq.size*3} (aa:#{aa.seq.size}*3)>" if nt.seq.size != aa.seq.size*3
+    nt_size = nt.seq.size
+    expected_size = aa.seq.size*3
+    # raise "Sequence size mismatch for #{nt.id} <nt:#{nt.seq.size} != #{aa.seq.size*3} (aa:#{aa.seq.size}*3)>" if expected_size - 3 > nt_size and  nt_size > expected_size + 3
   end
 
   def id

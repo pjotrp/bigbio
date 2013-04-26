@@ -130,3 +130,27 @@ class FastaReader
   end
 
 end
+
+# The following is actually a module/trait implementation without state
+
+class FastaReader
+
+  def FastaReader::emit_seq func
+    buf = func.call
+    seq = ""
+    id = nil
+    descr = nil
+    buf.split(/\n/).each do | line |
+      if line =~ /^>/
+        yield FastaRecord.new(id, descr, seq) if id and seq and seq.size > 0
+        descr = line[1..-1].strip
+        matched = /^(\S+)/.match(descr)
+        id = matched[0]
+        seq = ""
+      else
+        seq += line.strip
+      end
+    end
+  end
+
+end

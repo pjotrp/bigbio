@@ -8,8 +8,10 @@ computing in biology.
 BigBio may use BioLib C/C++/D functions for increasing performance and
 reducing memory consumption.
 
-This is an experimental project. If you wish to contribute subscribe
-to the BioRuby and/or BioLib mailing lists.
+In a way, this is an experimental project. I use it for
+experimentation, but what is in here should work fine. If you wish to
+contribute subscribe to the BioRuby and/or BioLib mailing lists
+instead.
 
 # Overview
 
@@ -80,6 +82,44 @@ write the FASTA file
 ```ruby
 fasta = FastaWriter.new(fn)
 fasta.write(mysequence)
+```
+
+## Transform a FASTA file
+
+You can combine above FastaReader and FastaWriter to transform
+sequences, e.g.
+
+```ruby
+fasta = FastaWriter.new(in_fn)
+FastaReader.new(out_fn).each do | rec |
+  # Strip the description down to the second ID
+  (id1,id2) = /(\S+)\s+(\S+)/.match(rec.descr)
+  fasta.write(id2,rec.seq)
+end
+```
+
+The downside to this approach is the explicit file naming. What if you
+want to use STDIN or some other source instead? I have come round to
+the idea of using a combination of lambda and block. For example:
+
+```ruby
+  FastaReader::emit_seq(-> gets) { |rec|
+    print FastaWriter.to_fasta(rec)
+  }
+```
+
+which takes STDIN line by line, and outputs FASTA on STDOUT. This is 
+a correct design as the FastaReader and FastaWriter know nothing of
+the mechanism fetching and displaying data. These can both be 'pure' 
+functions. Note also that the data is never fully loaded into RAM.
+
+Here the transformer functional style
+
+```ruby
+  FastaReader::emit_seq(-> gets) { |rec|
+    (id1,id2) = /(\S+)\s+(\S+)/.match(rec.descr)
+    print FastaWriter.to_fasta(id2,req.seq)
+  }
 ```
 
 ## Fetch ORFs from a sequence
