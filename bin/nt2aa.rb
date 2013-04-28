@@ -39,7 +39,9 @@ ARGV.each do | fn |
 
         # ajpseqt  = Biolib::Emboss.ajTrnSeqOrig(trnTable,ajpseq,frame)
         # aa       = Biolib::Emboss.ajSeqGetSeqCopyC(ajpseqt)
-        print "> ",rec.descr," [",frame.to_s,"]\n"
+        print "> ",rec.descr
+        print " [",frame.to_s,"]" if do_sixframes
+        print "\n"
         print aa,"\n"
     end
   }
