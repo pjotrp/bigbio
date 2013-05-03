@@ -25,7 +25,70 @@ instead.
   ORFs between START_STOP or STOP_STOP codons.
 * BigBio has a Phylip (PAML style) emitter and writer
 
-# Examples
+# Installation
+
+The easy way
+
+```sh
+gem install bio-bigbio
+```
+
+in your code
+
+```ruby
+require 'bigbio'
+```
+
+# Command line tools
+
+Some functionality comes also as executable command line tools (see the
+./bin directory). Use the -h switch to get information. Current tools
+are 
+
+1. getorf: fetch all areas between start-stop and stop-stop codons in six frames (using EMBOSS when biolib is available)
+2. nt2aa.rb: translate in six frames (using EMBOSS when biolib is available)
+3. fasta_filter.rb
+
+## Command line Fasta Filter
+
+The CLI filter accepts standard Ruby commands. 
+
+Filter sequences that contain more than 25% C's
+
+```sh
+fasta_filter.rb --filter "rec.seq.count('C') > rec.seq.size*0.25" test/data/fasta/nt.fa
+```
+
+Look for IDs containing -126 and sequences ending on CCC
+
+```sh
+fasta_filter.rb --filter "rec.id =~ /-126/ or rec.seq =~ /CCC$/" test/data/fasta/nt.fa
+```
+
+Filter out all masked sequences that contain more than 10% masked
+nucleotides
+
+```sh
+fasta_filter.rb --filter "rec.seq.count('N')<rec.seq.size*0.10" 
+```
+
+Next to rec.id and rec.seq, you have rec.descr and 'num' as variables,
+so to skip every other record
+
+```sh
+fasta_filter.rb --filter "num % 2 == 0" 
+```
+
+Rewrite all sequences to lower case, you can use the useful rewrite
+option
+
+```sh
+fasta_filter.rb --rewrite 'rec.seq = rec.seq.downcase'
+```
+
+Filters and rewrites can be combined. The rest is up to your imagination!
+
+# API Examples
 
 ## Iterate through a FASTA file
 
@@ -146,63 +209,27 @@ translate = Nucleotide::Translate.new(trn_table)
 aa_frames = translate.aa_6_frames("ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT")
 ```
 
-# Command line tools
+# Project home page
 
-Some functionality comes also as executable command line tools (see the
-./bin directory). Use the -h switch to get information. Current tools
-are 
+Information on the source tree, documentation, examples, issues and
+how to contribute, see
 
-1. getorf: fetch all areas between start-stop and stop-stop codons in six frames (using EMBOSS when biolib is available)
-2. nt2aa.rb: translate in six frames (using EMBOSS when biolib is available)
-3. fasta_filter.rb
+  http://github.com/pjotrp/bigbio
 
-## Command line Fasta Filter
+The BioRuby community is on IRC server: irc.freenode.org, channel: #bioruby.
 
-The CLI filter accepts standard Ruby commands. 
+# Cite
 
-Filter sequences that contain more than 25% C's
+If you use this software, please cite one of
+  
+* [BioRuby: bioinformatics software for the Ruby programming language](http://dx.doi.org/10.1093/bioinformatics/btq475)
+* [Biogem: an effective tool-based approach for scaling up open source software development in bioinformatics](http://dx.doi.org/10.1093/bioinformatics/bts080)
 
-```sh
-fasta_filter.rb --filter "rec.seq.count('C') > rec.seq.size*0.25" test/data/fasta/nt.fa
-```
+# Biogems.info
 
-Look for IDs containing -126 and sequences ending on CCC
-
-```sh
-fasta_filter.rb --filter "rec.id =~ /-126/ or rec.seq =~ /CCC$/" test/data/fasta/nt.fa
-```
-
-Filter out all masked sequences that contain more than 10% masked
-nucleotides
-
-```sh
-fasta_filter.rb --filter "rec.seq.count('N')<rec.seq.size*0.10" 
-```
-
-Next to rec.id and rec.seq, you have rec.descr and 'num' as variables,
-so to skip every other record
-
-```sh
-fasta_filter.rb --filter "num % 2 == 0" 
-```
-
-The rest is up to your imagination!
-
-# Install
-
-The easy way
-
-```sh
-gem install bio-bigbio
-```
-
-in your code
-
-```ruby
-require 'bigbio'
-```
+This Biogem is published at [#bio-table](http://biogems.info/index.html)
 
 # Copyright
 
-Copyright (c) 2011-2012 Pjotr Prins. See LICENSE for further details.
+Copyright (c) 2011-2013 Pjotr Prins. See LICENSE for further details.
 

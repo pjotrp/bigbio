@@ -30,6 +30,10 @@ class OptParser
         options.filter = expr
       end
 
+      opts.on("--rewrite expression","Rewrite expression") do |expr|
+        options.rewrite = expr
+      end
+
       opts.on("--codonize",
               "Trim sequence to be at multiple of 3 nucleotides") do |b|
         options.codonize = b
@@ -55,6 +59,7 @@ class OptParser
       opts.separator "  fasta_filter.rb --filter \"rec.seq.count('C') > rec.seq.size*0.25\" test/data/fasta/nt.fa"
       opts.separator "  fasta_filter.rb --filter \"rec.descr =~ /C. elegans/\" test/data/fasta/nt.fa"
       opts.separator "  fasta_filter.rb --filter \"num % 2 == 0\" test/data/fasta/nt.fa"
+      opts.separator "  fasta_filter.rb test/data/fasta/nt.fa --rewrite 'rec.seq.downcase!'"
       opts.separator ""
       opts.separator "Other options:"
       opts.separator ""
@@ -87,7 +92,9 @@ FastaReader::emit_fastarecord(-> { ARGF.gets }) { | rec |
   next if options.min and rec.seq.size < options.min
   # --- Truncate description to ID
   rec.descr = rec.id if options.id
-  
+ 
+  # --- rewrite
+  eval(options.rewrite) if options.rewrite
   print rec.to_fasta
 }
 
