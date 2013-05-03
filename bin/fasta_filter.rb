@@ -78,10 +78,7 @@ options = OptParser.parse(ARGV)
 num = -1
 FastaReader::emit_fastarecord(-> { ARGF.gets }) { | rec |
   num += 1
-  if options.filter
-    b = eval(options.filter)
-    next if not eval(options.filter)
-  end
+  next if options.filter and not eval(options.filter)
   if options.codonize
     size = rec.seq.size
     rec.seq = rec.seq[0..size - (size % 3) - 1]
