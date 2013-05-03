@@ -17,11 +17,12 @@ instead.
 
 * BigBio can translate nucleotide sequences to amino acid
   sequences using an EMBOSS C function, or BioRuby's translator.
-* BigBio has an ORF emitter which parses DNA/RNA sequences and emits
-  ORFs between START_STOP or STOP_STOP codons.
 * BigBio has a terrific FASTA file emitter which iterates FASTA files and
   iterates sequences without loading everything in memory. There is
   also an indexed edition
+* BioBio has a flexible FASTA filter 
+* BigBio has an ORF emitter which parses DNA/RNA sequences and emits
+  ORFs between START_STOP or STOP_STOP codons.
 * BigBio has a Phylip (PAML style) emitter and writer
 
 # Examples
@@ -154,6 +155,38 @@ are
 1. getorf: fetch all areas between start-stop and stop-stop codons in six frames (using EMBOSS when biolib is available)
 2. nt2aa.rb: translate in six frames (using EMBOSS when biolib is available)
 3. fasta_filter.rb
+
+## Command line Fasta Filter
+
+The CLI filter accepts standard Ruby commands. 
+
+Filter sequences that contain more than 25% C's
+
+```sh
+fasta_filter.rb --filter "rec.seq.count('C') > rec.seq.size*0.25" test/data/fasta/nt.fa
+```
+
+Look for IDs containing -126 and sequences ending on CCC
+
+```sh
+fasta_filter.rb --filter "rec.id =~ /-126/ or rec.seq =~ /CCC$/" test/data/fasta/nt.fa
+```
+
+Filter out all masked sequences that contain more than 10% masked
+nucleotides
+
+```sh
+fasta_filter.rb --filter "rec.seq.count('N')<rec.seq.size*0.10" 
+```
+
+Next to rec.id and rec.seq, you have rec.descr and 'num' as variables,
+so to skip every other record
+
+```sh
+fasta_filter.rb --filter "num % 2 == 0" 
+```
+
+The rest is up to your imagination!
 
 # Install
 

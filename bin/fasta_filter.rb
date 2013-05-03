@@ -27,6 +27,10 @@ class OptParser
       opts.separator ""
       opts.separator "Specific options:"
 
+      opts.on("--filter expression","Filter on Ruby expression") do |expr|
+        options.filter = expr
+      end
+
       opts.on("--codonize",
               "Trim sequence to be at multiple of 3 nucleotides") do |b|
         options.codonize = b
@@ -46,7 +50,15 @@ class OptParser
       end
 
       opts.separator ""
+      opts.separator "Examples:"
+      opts.separator ""
+      opts.separator "  fasta_filter.rb --filter \"rec.id =~ /-126/ or rec.seq =~ /CCC$/\" test/data/fasta/nt.fa"
+      opts.separator "  fasta_filter.rb --filter \"rec.seq.count('C') > rec.seq.size*0.25\" test/data/fasta/nt.fa"
+      opts.separator "  fasta_filter.rb --filter \"rec.descr =~ /C. elegans/\" test/data/fasta/nt.fa"
+      opts.separator "  fasta_filter.rb --filter \"num % 2 == 0\" test/data/fasta/nt.fa"
+      opts.separator ""
       opts.separator "Other options:"
+      opts.separator ""
 
       opts.on_tail("-h", "--help", "Show this message") do
         puts opts
@@ -63,7 +75,13 @@ end  # class OptParser
 
 options = OptParser.parse(ARGV)
 
+num = -1
 FastaReader::emit_fastarecord(-> { ARGF.gets }) { | rec |
+  num += 1
+  if options.filter
+    b = eval(options.filter)
+    next if not eval(options.filter)
+  end
   if options.codonize
     size = rec.seq.size
     rec.seq = rec.seq[0..size - (size % 3) - 1]
