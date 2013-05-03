@@ -5,25 +5,28 @@
 
 Gem::Specification.new do |s|
   s.name = "bio-bigbio"
-  s.version = "0.1.4"
+  s.version = "0.1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pjotr Prins"]
-  s.date = "2012-02-03"
+  s.date = "2013-05-03"
   s.description = "Fasta reader, ORF emitter, sequence translation"
   s.email = "pjotr.public01@thebird.nl"
-  s.executables = ["getorf", "nt2aa.rb"]
+  s.executables = ["fasta_filter.rb", "fasta_sort.rb", "getorf", "nt2aa.rb"]
   s.extra_rdoc_files = [
-    "LICENSE",
+    "LICENSE.txt",
     "README.md"
   ]
   s.files = [
+    ".travis.yml",
     "Gemfile",
     "Gemfile.lock",
-    "LICENSE",
+    "LICENSE.txt",
     "README.md",
     "Rakefile",
     "VERSION",
+    "bin/fasta_filter.rb",
+    "bin/fasta_sort.rb",
     "bin/getorf",
     "bin/nt2aa.rb",
     "bio-bigbio.gemspec",
@@ -42,6 +45,7 @@ Gem::Specification.new do |s|
     "lib/bigbio/db/fasta/fastarecord.rb",
     "lib/bigbio/db/fasta/fastawriter.rb",
     "lib/bigbio/db/fasta/indexer.rb",
+    "lib/bigbio/db/phylip.rb",
     "lib/bigbio/environment.rb",
     "lib/bigbio/sequence/predictorf.rb",
     "lib/bigbio/sequence/translate.rb",
