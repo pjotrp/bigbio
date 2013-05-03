@@ -153,6 +153,7 @@ are
 
 1. getorf: fetch all areas between start-stop and stop-stop codons in six frames (using EMBOSS when biolib is available)
 2. nt2aa.rb: translate in six frames (using EMBOSS when biolib is available)
+3. fasta_filter.rb
 
 # Install
 

@@ -7,6 +7,8 @@
 #
 # You can choose the heuristic on the command line (default stopstop).
 
+$stderr.print "WARNING: This tool has one or more known bugs! Better use the EMBOSS getorf instead for now\n"
+
 rootpath = File.dirname(File.dirname(__FILE__))
 $: << File.join(rootpath,'lib')
 
@@ -42,10 +44,10 @@ EXAMPLE
     exit()
   }
    
-  opts.on("-h heuristic", String, "Heuristic (stopstop)") do | s |
+  opts.on("-h heuristic", String, "Heuristic (default #{heuristic})") do | s |
     heuristic = s
   end
-  opts.on("-s size", "--min-size", Integer, "Minimal sequence size") do | n |
+  opts.on("-s size", "--min-size", Integer, "Minimal sequence size (default #{minsize})") do | n |
     minsize = n
   end
   opts.on("--longest", "Only get longest ORF match") do 
