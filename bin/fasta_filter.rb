@@ -10,7 +10,6 @@ require 'optparse'
 require 'ostruct'
 
 class OptParser
-
   #
   # Return a structure describing the options.
   #
@@ -70,7 +69,6 @@ class OptParser
     opt_parser.parse!(args)
     options
   end  # parse()
-
 end  # class OptParser
 
 options = OptParser.parse(ARGV)
@@ -78,12 +76,16 @@ options = OptParser.parse(ARGV)
 num = -1
 FastaReader::emit_fastarecord(-> { ARGF.gets }) { | rec |
   num += 1
+  # --- Filtering
   next if options.filter and not eval(options.filter)
-  if options.codonize
+  if options.codonize 
+    # --- Round sequence to nearest 3 nucleotides
     size = rec.seq.size
     rec.seq = rec.seq[0..size - (size % 3) - 1]
   end
+  # --- Only use sequences from MIN size
   next if options.min and rec.seq.size < options.min
+  # --- Truncate description to ID
   rec.descr = rec.id if options.id
   
   print rec.to_fasta
