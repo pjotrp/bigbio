@@ -227,7 +227,7 @@ If you use this software, please cite one of
 
 # Biogems.info
 
-This Biogem is published at [#bio-table](http://biogems.info/index.html)
+This Biogem is published on [biogems.info](http://biogems.info/index.html#bigbio)
 
 # Copyright
 
