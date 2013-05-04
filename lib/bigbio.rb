@@ -22,7 +22,7 @@ begin
   Bio::Big::Environment.instance.biolib = true
 rescue LoadError
   log.outputters = Bio::Log::Outputter.stderr
-  log.warn "BioLib functionality not loaded"
+  log.debug "BioLib functionality not loaded"
 end
 
 require 'bio'
