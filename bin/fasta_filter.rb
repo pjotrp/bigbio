@@ -60,6 +60,8 @@ class OptParser
       opts.separator "  fasta_filter.rb --filter \"rec.descr =~ /C. elegans/\" test/data/fasta/nt.fa"
       opts.separator "  fasta_filter.rb --filter \"num % 2 == 0\" test/data/fasta/nt.fa"
       opts.separator "  fasta_filter.rb test/data/fasta/nt.fa --rewrite 'rec.seq.downcase!'"
+      opts.separator "  fasta_filter.rb --rewrite 'rec.descr =~ /gene=(\S+)/; rec.descr = $1' test.fa"
+      opts.separator "  fasta_filter.rb --filter 'rec.seq =~ /\*./' aa.fa"
       opts.separator ""
       opts.separator "Other options:"
       opts.separator ""

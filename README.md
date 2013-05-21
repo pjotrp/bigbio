@@ -79,12 +79,25 @@ so to skip every other record
 fasta_filter.rb --filter "num % 2 == 0" 
 ```
 
+Find all sequences that contain a stop codon in the sequence
+
+```sh
+fasta_filter.rb --filter 'rec.seq =~ /\*./' aa.fa
+```
+
 Rewrite all sequences to lower case, you can use the useful rewrite
 option
 
 ```sh
 fasta_filter.rb --rewrite 'rec.seq = rec.seq.downcase'
 ```
+
+Rewrite the FASTA descriptors
+
+```sh
+fasta_filter.rb --rewrite 'rec.descr =~ /gene=(\S+)/; rec.descr = $1' test.fa
+```
+
 
 Filters and rewrites can be combined. The rest is up to your imagination!
 
