@@ -98,8 +98,14 @@ Rewrite the FASTA descriptors
 fasta_filter.rb --rewrite 'rec.descr =~ /gene=(\S+)/; rec.descr = $1' test.fa
 ```
 
+Filters and rewrites can be combined. The rest is up to your
+imagination! One final example to remove low quality sequences from an
+amino acid file (one amino acid dominates):
 
-Filters and rewrites can be combined. The rest is up to your imagination!
+```sh
+fasta_filter.rb --filter "count = {} ; rec.seq.each_char { |c| count[c] ||= 1 ; count[c] += 1 }; count.values.max.to_f/rec.seq.size < 0.30" < aa.fa > aa1.fa
+```
+
 
 # API Examples
 
