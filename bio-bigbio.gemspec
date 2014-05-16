@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bio-bigbio"
-  s.version = "0.1.5"
+  s.version = "0.1.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pjotr Prins"]
-  s.date = "2013-05-03"
+  s.date = "2014-05-16"
   s.description = "Fasta reader, ORF emitter, sequence translation"
   s.email = "pjotr.public01@thebird.nl"
   s.executables = ["fasta_filter.rb", "fasta_sort.rb", "getorf", "nt2aa.rb"]
@@ -63,44 +63,31 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/pjotrp/bigbio"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.23"
   s.summary = "Low memory sequence emitters"
-  s.test_files = [
-    "spec/emitter_spec.rb",
-    "spec/predictorf_spec.rb",
-    "test/doctest/test_fasta.rb",
-    "test/doctest/test_frames.rb",
-    "test/doctest/test_getorf.rb",
-    "test/doctest/test_paired.rb",
-    "test/performance/translate_with_biolib.rb",
-    "test/performance/translate_with_bioruby.rb"
-  ]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<bio>, [">= 1.4.1"])
-      s.add_runtime_dependency(%q<bio-logger>, [">= 0.9.0"])
-      s.add_development_dependency(%q<rspec>, ["~> 2.3.0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_runtime_dependency(%q<bio-logger>, [">= 0"])
+      s.add_development_dependency(%q<rspec>, [">= 0"])
+      s.add_development_dependency(%q<bundler>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
     else
       s.add_dependency(%q<bio>, [">= 1.4.1"])
-      s.add_dependency(%q<bio-logger>, [">= 0.9.0"])
-      s.add_dependency(%q<rspec>, ["~> 2.3.0"])
-      s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-      s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<bio-logger>, [">= 0"])
+      s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<bundler>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
     end
   else
     s.add_dependency(%q<bio>, [">= 1.4.1"])
-    s.add_dependency(%q<bio-logger>, [">= 0.9.0"])
-    s.add_dependency(%q<rspec>, ["~> 2.3.0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
-    s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<bio-logger>, [">= 0"])
+    s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<bundler>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
   end
 end
 
