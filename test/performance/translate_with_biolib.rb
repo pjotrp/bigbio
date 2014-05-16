@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+#! /usr/bin/env ruby
 #
 # Performance testing routing for translating a FASTA file into six
 # reading frames using the Biolib (EMBOSS) routines.

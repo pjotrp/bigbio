@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+#! /usr/bin/env ruby
 #
 # Translate nucleotide sequences into aminoacids sequences in all 
 # reading frames.

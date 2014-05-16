@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+#! /usr/bin/env ruby
 #
 # Predict ORF's from nucleotide sequences using the BigBio predictors. 
 # The input is a fasta file, the output consists of

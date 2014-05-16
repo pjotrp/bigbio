@@ -250,5 +250,5 @@ This Biogem is published on [biogems.info](http://biogems.info/index.html#bigbio
 
 # Copyright
 
-Copyright (c) 2011-2013 Pjotr Prins. See LICENSE for further details.
+Copyright (c) 2011-2014 Pjotr Prins. See LICENSE for further details.
 

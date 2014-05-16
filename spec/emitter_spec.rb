@@ -10,7 +10,7 @@ describe Bio::Big::FastaEmitter, "when using the emitter" do
 
   it "should emit small parts" do
     s = ""
-    FastaEmitter.new("test/data/fasta/nt.fa",10).emit_seq do | part, index, tag, seq |
+    Bio::Big::FastaEmitter.new("test/data/fasta/nt.fa",10).emit_seq do | part, index, tag, seq |
       # p [index, part, tag, seq]
       s += seq
       if index == 95 and part == :tail
@@ -38,7 +38,7 @@ describe Bio::Big::FastaEmitter, "when using the emitter" do
   end
 
   it "should emit large parts" do 
-    FastaEmitter.new("test/data/fasta/nt.fa").emit_seq do | part, index, tag, seq |
+    Bio::Big::FastaEmitter.new("test/data/fasta/nt.fa").emit_seq do | part, index, tag, seq |
       # p [index, part, tag, seq]
       if index == 95
         seq.should == "ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGTCTTCAGTGTACAGTATCAAGGGCTCGATCTGCGGTGGATGAGACATCAGATTCAGGAGCTTTTCAAAGAACTGCATCGACATCCGTAACTTCGTTTCAAAAGATTCCAATTCTCAGTTTCAGCTGAATCTGGTAGATACCATCTTTACATATCGTATGCTTGTCATGGGCTTCTAGATGCCTTTCATACTTAAAGATCAAAGGACTTGACGATGCAATAAGCTTCTCGTCTGTAAAACCC"
@@ -47,12 +47,12 @@ describe Bio::Big::FastaEmitter, "when using the emitter" do
   end
 end
 
-describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
+describe Bio::Big::ShortFrameState, "when using the Bio::Big::ShortFrameState" do
 
   include Bio::Big
   
   it "should find an ORF" do
-    fr = ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa",0,0
+    fr = Bio::Big::ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa",0,0
     orfs = fr.get_stopstop_orfs
     orfs.map{ | orf | orf.pos }.should == [ 3, 5 ]
     orfs.map{ | orf | orf.to_seq }.should == ["ATGTAA", "TGGATTTAA"]
@@ -61,14 +61,14 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTAA","ATGTAA"]
   end
   it "should handle min_size" do
-    fr = ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa",0,9
+    fr = Bio::Big::ShortFrameState.new "atggattaaatgtaatggatttaatgtaaa",0,9
     orfs = fr.get_stopstop_orfs
     orfs.map{ | orf | orf.to_seq }.should == [ "TGGATTTAA"]
     orfs.map{ | orf | orf.pos }.should == [ 5 ]
     fr.get_startstop_orfs.should == []
   end
   it "should find ORFs in" do
-    fr = ShortFrameState.new "atgttttaaatgtaatgttgttaaatgttttaaatgtaatgttgttaa",0,0
+    fr = Bio::Big::ShortFrameState.new "atgttttaaatgtaatgttgttaaatgttttaaatgtaatgttgttaa",0,0
     orfs = fr.get_stopstop_orfs
     orfs.map{ | orf | orf.to_seq }.should ==  ["ATGTAA", "TGTTGTTAA", "ATGTTTTAA", "ATGTAA", "TGTTGTTAA"]
     orfs.map{ | orf | orf.pos }.should == [3, 5, 8, 11, 13]
@@ -108,17 +108,17 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
 
     # Frame 0
     minsize = 0
-    fr = ShortFrameState.new s,0,minsize
+    fr = Bio::Big::ShortFrameState.new s,0,minsize
     orfs = fr.get_stopstop_orfs
     orfs.map{ | orf | orf.to_seq }.should == []
 
     # Frame 1
-    fr = ShortFrameState.new s[1..-1],0,minsize
+    fr = Bio::Big::ShortFrameState.new s[1..-1],0,minsize
     os = fr.get_stopstop_orfs
     os.map{ | orf | orf.to_seq }.should == ["TTNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA"]
     orfs += os
     # Frame 2
-    fr = ShortFrameState.new s[2..-1],0,minsize
+    fr = Bio::Big::ShortFrameState.new s[2..-1],0,minsize
     os = fr.get_stopstop_orfs
     os.map{ | orf | orf.to_seq }.should == ["GCGGANCGGTAA", "GAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGCTAA", "GGTCCTTGTCACAGATGA", "GGCTCGTAG"]
     orfs += os
@@ -132,14 +132,14 @@ describe Bio::Big::ShortFrameState, "when using the ShortFrameState" do
 
     # Frame 0
     minsize = 0
-    fr = ShortFrameState.new s,0,minsize
+    fr = Bio::Big::ShortFrameState.new s,0,minsize
     orfs = fr.get_startstop_orfs
 
     # Frame 1
-    fr = ShortFrameState.new s[1..-1],0,minsize
+    fr = Bio::Big::ShortFrameState.new s[1..-1],0,minsize
     orfs += fr.get_startstop_orfs
     # Frame 2
-    fr = ShortFrameState.new s[2..-1],0,minsize
+    fr = Bio::Big::ShortFrameState.new s[2..-1],0,minsize
     orfs += fr.get_startstop_orfs
     orfs.map{ | orf | orf.to_seq }.should == []
     orfs.size.should == 0
@@ -151,11 +151,11 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
   it "should combine a forward frame" do
     s1 = "atggattaaatgtaata"
     s2 = "atggatttaatgtaaa"
-    fr = ShortFrameState.new s1,0,0
+    fr = Bio::Big::ShortFrameState.new s1,0,0
     fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
     orfs.size == 1 # in codons
-    fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
+    fr3 = Bio::Big::FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
     fr3.ntseq_pos.should == 15
     fr3.codons.to_seq.should == "TAATGGATTTAATGTAAA"
     norfs = fr3.get_stopstop_orfs
@@ -169,11 +169,11 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
     #     ......---===xx
     s2 = "atggatttaattattataaa"
     #     x======xxx======xxx.
-    fr = ShortFrameState.new s1,0,0
+    fr = Bio::Big::ShortFrameState.new s1,0,0
     fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
     orfs.size == 0 # in codons
-    fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
+    fr3 = Bio::Big::FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
     fr3.ntseq_pos.should == 0
     fr3.codons.to_seq.should == "ATGGATTAAATGTAATGGATTTAATTATTATAA"
     norfs = fr3.get_stopstop_orfs
@@ -187,11 +187,11 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
     #     ......---===xx
     s2 = "atggatttaatgtaaa"
     #     x======xxx
-    fr = ShortFrameState.new s1,0,0
+    fr = Bio::Big::ShortFrameState.new s1,0,0
     fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
     orfs.size == 0 # in codons
-    fr3 = FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
+    fr3 = Bio::Big::FrameCodonHelpers::CreateShortFrame.create_right(fr,orfs,s2)
     # p fr3
     fr3.ntseq_pos.should == 0 # on the combined sequences
     fr3.codons.to_seq.should == "ATGGATTAAATGTAATGGATTTAATGTAAA"
@@ -221,14 +221,14 @@ describe Bio::Big::ShortFrameState, "when combining frames" do
     s1 = "atggattaaatgta"
     #     ......xxx=====
     # now move the other way, as sequences get emitted on the left
-    fr = ShortReversedFrameState.new s2,0,0
+    fr = Bio::Big::ShortReversedFrameState.new s2,0,0
     # p fr
     fr.codons.to_seq.should == "ATTTAAATGGATTTAATGTAAATT"
     fr.ntseq_pos.should == 0
     orfs = fr.get_stopstop_orfs
     orfs.map{ | orf | orf.to_seq }.should == ["ATGGATTTAATGTAA"]
     orfs.first.pos.should == 2 # in codons
-    fr3 = FrameCodonHelpers::CreateShortFrame.create_left(fr,orfs,s1)
+    fr3 = Bio::Big::FrameCodonHelpers::CreateShortFrame.create_left(fr,orfs,s1)
     fr3.ntseq_pos.should == 18 # 6 codons
     fr3.codons.to_seq.should == "ATGGATTAAATGTATATTTAA"
     norfs = fr3.get_stopstop_orfs
@@ -244,9 +244,9 @@ describe Bio::Big::OrfEmitter, "when using the ORF emitter" do
   include Bio::Big
 
   it "should emit STOP-STOP ORFs in all frames" do
-    f = FastaEmitter.new("test/data/fasta/nt.fa")
+    f = Bio::Big::FastaEmitter.new("test/data/fasta/nt.fa")
     seqs = []
-    OrfEmitter.new(f,:stopstop)::emit_seq do | frame, index, tag, pos, seq |
+    Bio::Big::OrfEmitter.new(f,:stopstop)::emit_seq do | frame, index, tag, pos, seq |
       break if index != 0
       if frame == 0 and index == 0 and pos == 39
         seq.should == "TTNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA"
@@ -259,9 +259,9 @@ describe Bio::Big::OrfEmitter, "when using the ORF emitter" do
     seqs.join(';')[50..350].should == "TNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA;GCAAAGAGCGAGAAAATGAGCGGANCGGTAAGAAAATCGCGGATGTGGCTTTCAAAGCTTCAAGGACTATCGATTGGGATGGTATGGCTAAGGTCCTTGTCACAGATGAGGCTCGTAGAGAGTTCTCTAACCTTCGTCGTGCTTTCGATGAGGTTAACACACAGCTCCAGACCAAATTTAGTCAGGACCT"
   end
   it "should emit STOP-STOP ORFs in all frames using a shorter emitter" do
-    f = FastaEmitter.new("test/data/fasta/nt.fa",150)
+    f = Bio::Big::FastaEmitter.new("test/data/fasta/nt.fa",150)
     seqs = []
-    OrfEmitter.new(f,:stopstop)::emit_seq do | frame, index, tag, pos, seq |
+    Bio::Big::OrfEmitter.new(f,:stopstop)::emit_seq do | frame, index, tag, pos, seq |
       break if index != 0
       if frame == 0 and index == 0 and pos == 39
         seq.should == "TTNCGCGTGCCGCCTTCTTTCTCCTTTTTCTCTTTTACTTCTTCATCATCATCTTCTTCTTCTTCCTCTTCGATATTCGTCAGTGTGTGTATTTTGGGGAAAACTTTGTGA"
