@@ -228,6 +228,40 @@ translate = Nucleotide::Translate.new(trn_table)
 aa_frames = translate.aa_6_frames("ATCATTAGCAACACCAGCTTCCTCTCTCTCGCTTCAAAGTTCACTACTCGTGGATCTCGT")
 ```
 
+## Walk a FASTA (reference) genome
+
+Genomes and BACS often come as large (continuous) FASTA files. When
+variant/position queries happen on sorted data, the genome can be
+walked through once reading the whole file serially. This is what
+FastaGenomeReader does.
+
+The following code assumes the FASTA descriptors contain 
+
+```ruby
+  >13 dna:chromosome chromosome:GRCh37:13:1:115169878:1
+```
+
+so 'chr' is captured, as well as 'start' and 'stop'. Using 
+[bio-vcf](https://github.com/pjotrp/bioruby-vcf):
+
+```ruby
+genome = FastaGenomeReader.new('Hs_GRCh37_gatk.fasta', -> 
+  { |descr| a = skip,skip,skip,chr,start,stop = descr.split(':')
+      chr, start.to_i, stop.to_i } )
+
+STDIN.each_line do | line |
+  next if line =~ /^#/
+  fields = VcfLine.parse(line)
+  rec = VcfRecord.new(fields,header)
+  if rec.var == genome.ref(vcf.chr,vcf.pos+1)
+    # do something
+  end
+end
+```
+
+FastaGenomeReader is buffered and tiled. You can override the size of
+64K.
+
 # Project home page
 
 Information on the source tree, documentation, examples, issues and

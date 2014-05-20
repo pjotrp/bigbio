@@ -32,6 +32,7 @@ require 'bigbio/db/emitters/orf_emitter'
 
 autoload :FastaReader, 'bigbio/db/fasta'
 autoload :FastaWriter, 'bigbio/db/fasta'
+autoload :FastaGenomeReader, 'bigbio/db/fasta'
 autoload :FastaPairedReader, 'bigbio/db/fasta'
 autoload :FastaPairedWriter, 'bigbio/db/fasta'
 autoload :BlastClust, 'bigbio/db/blast'

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pjotr Prins"]
-  s.date = "2014-05-16"
+  s.date = "2014-05-20"
   s.description = "Fasta reader, ORF emitter, sequence translation"
   s.email = "pjotr.public01@thebird.nl"
   s.executables = ["fasta_filter.rb", "fasta_sort.rb", "getorf", "nt2aa.rb"]
@@ -63,11 +63,11 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/pjotrp/bigbio"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.23"
+  s.rubygems_version = "2.0.3"
   s.summary = "Low memory sequence emitters"
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<bio>, [">= 1.4.1"])
