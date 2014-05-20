@@ -15,8 +15,15 @@ describe FastaGenomeReader, "when reading a full genome" do
     @genome.ref('X',120).should == 'C'
     @genome.ref('X',479).should == 'T'
     @genome.ref('X',480).should == 'T'
+    # Within the same record you can ref
+    @genome[480].should == 'T'
+    @genome[481].should == 'T'
+    @genome[482].should == 'N'
     @genome.ref('X',511).should == 'N'
-    @genome.ref('X',560).should == 'T' # <- reads into the 3rd sequenc
+    @genome.ref('X',560).should == 'T' # <- reads into the 3rd sequence
+    @genome.ref('Y',29).should == nil
+    @genome.ref('X',10).should == nil 
+    @genome.ref('X',10000).should == nil 
   end
 
 end

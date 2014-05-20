@@ -1,8 +1,8 @@
-# Buffered FastaGenomeReader
+# Buffered FastaGenomeReader. 
 #
-
-class BufferMissed < Exception
-end
+# The logic is straightforward. Keep reading a file for the first matching
+# chr,pos, max_bufsize characters at a time. Looking back is not allowed.
+#
 
 class FastaGenomeReader
 
@@ -19,15 +19,20 @@ class FastaGenomeReader
       @offset = @start
       @buf = ''
     end
+
     def value pos
       @buf[pos-@offset]
     end
-    def in_range? pos
+
+    def in_range? chr,pos
+      return false if chr != @chr
       @offset <= pos and pos < @offset+@buf.size
     end
+
     def move_offset
       @offset += @buf.size
     end
+
     def empty_buf
       move_offset
       @buf = ""
@@ -45,17 +50,10 @@ class FastaGenomeReader
 
   # Returns the reference nucleotide. Chr can be any name (i.e., chr or a bin).
   def ref chr,pos
-    p @rec
-    p [chr,pos]
-    if @rec.chr == chr and @rec.in_range?(pos)
-      # p "In range"
-      # if chr is current and pos within range return it
-      @rec.value(pos)
-    else
-      # recursively keep reading until position reached
-      read_next
-      ref(chr,pos)
+    while not @rec.in_range?(chr,pos)
+      return nil if not read_next 
     end
+    @rec.value(pos)
   end
 
   # Fetch in current chromosome/bin
@@ -68,18 +66,16 @@ private
   # Fill the next buffer until the next descriptor is reached or the buffer
   # is full
   def read_next
-    p ["***","READ NEXT"]
     @rec.empty_buf
     while (line = @f.gets)
       next if line =~ /^#/
-      p line
       if line =~ /^>/
-        @prev_rec = @rec
         @rec = Record.new(line,@parse_descriptor_func)
       else
         @rec.buf << line.strip
-        return if @rec.buf.size > @max_bufsize
+        return @rec if @rec.buf.size > @max_bufsize
       end
     end
+    nil
   end
 end
