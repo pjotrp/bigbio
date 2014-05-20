@@ -13,6 +13,7 @@ describe FastaGenomeReader, "when reading a full genome" do
     @genome.ref('X',112).should == 'A'
     @genome.ref('X',119).should == 'T'
     @genome.ref('X',120).should == 'C'
+    expect { @genome.ref('X',9) }.to raise_error
     @genome.ref('X',479).should == 'T'
     @genome.ref('X',480).should == 'T'
     # Within the same record you can ref
@@ -22,7 +23,7 @@ describe FastaGenomeReader, "when reading a full genome" do
     @genome.ref('X',511).should == 'N'
     @genome.ref('X',560).should == 'T' # <- reads into the 3rd sequence
     @genome.ref('Y',29).should == nil
-    @genome.ref('X',10).should == nil 
+    expect { @genome.ref('X',10) }.to raise_error
     @genome.ref('X',10000).should == nil 
   end
 

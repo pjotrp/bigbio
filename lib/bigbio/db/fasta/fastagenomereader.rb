@@ -26,7 +26,10 @@ class FastaGenomeReader
 
     def in_range? chr,pos
       return false if chr != @chr
-      @offset <= pos and pos < @offset+@buf.size
+      if pos < @offset
+        raise "Position <#{pos}> in #{chr} out of bounds! Can not look backwards beyond buffer offset #{@offset}" 
+      end
+      pos < @offset+@buf.size
     end
 
     def move_offset
