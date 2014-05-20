@@ -2,8 +2,8 @@
 
 BigBio = BIG DATA for Ruby
 
-BigBio is an initiative to a create high performance libraries for big data
-computing in biology.
+BigBio is an initiative to a create high performance low-memory
+libraries for big data computing in biology.
 
 BigBio may use BioLib C/C++/D functions for increasing performance and
 reducing memory consumption.
