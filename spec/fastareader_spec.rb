@@ -16,15 +16,19 @@ describe FastaGenomeReader, "when reading a full genome" do
     expect { @genome.ref('X',9) }.to raise_error
     @genome.ref('X',479).should == 'T'
     @genome.ref('X',480).should == 'T'
+    @genome.ref('X',480).should == 'T'
+    expect { @genome.ref('X',479) }.to raise_error
     # Within the same record you can ref
     @genome[480].should == 'T'
     @genome[481].should == 'T'
     @genome[482].should == 'N'
     @genome.ref('X',511).should == 'N'
     @genome.ref('X',560).should == 'T' # <- reads into the 3rd sequence
-    @genome.ref('Y',29).should == nil
-    expect { @genome.ref('X',10) }.to raise_error
+    @genome.ref('Y',29).should == nil  # Move to new chromosome
+    @genome.ref('X',10).should == nil  # Move to new chromosome
+    expect { @genome.ref('X',9) }.to raise_error
     @genome.ref('X',10000).should == nil 
+    expect { @genome.ref('X',9) }.to raise_error
   end
 
 end

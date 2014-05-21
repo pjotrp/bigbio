@@ -17,17 +17,19 @@ class FastaGenomeReader
       @start = 0 if not @start
       @stop = -1 if not @stop
       @offset = @start
+      @last_pos = @start
       @buf = ''
     end
 
     def value pos
+      @last_pos = pos
       @buf[pos-@offset]
     end
 
     def in_range? chr,pos
       return false if chr != @chr
-      if pos < @offset
-        raise "Position <#{pos}> in #{chr} out of bounds! Can not look backwards beyond buffer offset #{@offset}" 
+      if pos < @last_pos
+        raise "Position <#{pos}> in #{chr} out of bounds! Can not look backwards (#{@last_pos})!" 
       end
       pos < @offset+@buf.size
     end
